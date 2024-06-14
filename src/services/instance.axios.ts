@@ -1,4 +1,7 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { User } from "../types/User";
+import { APIConstants } from "./api.constant";
+import APIResponse from "../types/APIResponse";
 
 
 const instance = axios.create({
@@ -9,50 +12,52 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-    // (config) => {
-    //   const token = TokenService.getLocalAccessToken();
-    //   if (token) {
-    //     if (config.data instanceof FormData) {
-    //       // eslint-disable-next-line no-param-reassign
-    //       config.headers = { ...FORMDATA_HEADER };
-    //     }
-    //     // eslint-disable-next-line no-param-reassign
-    //     config.headers.Authorization = `Bearer ${token}`;
-    //   } else {
-    //     // eslint-disable-next-line no-param-reassign
-    //     delete config.headers.Authorization;
-    //   }
-
-    //   return config;
-    // },
-    // (error) => Promise.reject(error)
+    (config) => {
+        const token: string | null = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            delete config.headers.Authorization;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
 );
 
-// let isExpired = false;
+
+let isExpired: boolean = false;
+
 instance.interceptors.response.use(
-    // (res) => {
-    //   isExpired = false;
-    //   const { url } = res.config;
-    //   if (url === '/users/login') {
-    //     TokenService.setUser(res.data);
-    //   }
-    //   return res;
-    // },
-    // // eslint-disable-next-line consistent-return
-    // (err) => {
-    //   if (
-    //     (err?.response?.status === 401 && !isExpired) ||
-    //     (err?.response?.status === 403 && !isExpired)
-    //   ) {
-    //     isExpired = true;
-    //     if (TokenService.getUser()?.id) {
-    //       // eslint-disable-next-line no-alert
-    //       alert(i18n.t`error.401.message`);
-    //     }
-    //     TokenService.removeUser();
-    //     window.location = '/login';
-    //   } else return Promise.reject(err);
-    // }
+    (res: AxiosResponse) => {
+        isExpired = false;
+        const url: string | undefined = res.config.url;
+        if (url === APIConstants.AUTH.LOGIN && res.data) {
+            const response: APIResponse = res.data;
+            const user: User = response.result?.user;
+            const token: string = response.result?.token;
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('token', token);
+        }
+        return res;
+    },
+    (err: AxiosError) => {
+        console.log(err);
+        if (
+            (err?.response?.status === 401 && !isExpired) ||
+            (err?.response?.status === 403 && !isExpired)
+        ) {
+            isExpired = true;
+            const user: User = JSON.parse(localStorage.getItem('user') as string) as User;
+            if (user.id) {
+                alert('Your session has expired. Please login again');
+            }
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        } else {
+            return Promise.reject(err)
+        };
+    }
 );
 
 export default instance;

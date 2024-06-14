@@ -4,10 +4,7 @@ export class APIConstants {
 
 
     static AUTH = {
-        AUTHENTICATE: '/auth/authenticate',
-        REGISTER: '/auth/register',
-        LOG_OUT: '/auth/logout',
-        REFRESH_TOKEN: '/auth/refresh',
+        LOGIN: '/auth/login',
     };
 
     static USER = {

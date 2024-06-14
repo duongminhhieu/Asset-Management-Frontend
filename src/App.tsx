@@ -1,20 +1,40 @@
-import { useState } from "react";
-import { Button } from "antd";
 import { Route, Routes } from "react-router-dom";
+import PublicRoute from "./layouts/routes/public";
+import LoginPage from "./pages/public/Login";
+import UserRoute from "./layouts/routes/user";
+import HomePageUser from "./pages/user/Home";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <Routes>
         <Route
-          path="/hello-world"
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+
+        {/* Admin Route */}
+        <Route path="/admin" element={<div> Hello Admin</div>} />
+
+        {/* User Route */}
+        <Route
+          path="/"
+          element={
+            <UserRoute>
+              <HomePageUser />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/*"
           element={
             <div>
-              <h1>Hello World</h1>
-              <Button onClick={() => setCount(count + 1)}>Click me</Button>
-              <p>Count: {count}</p>
+              <h1>404 Not Found</h1>
             </div>
           }
         />
