@@ -5,7 +5,7 @@ import APIResponse from "../types/APIResponse";
 
 
 const instance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: process.env.VITE_BACKEND_URL,
     headers: {
         "Content-type": "application/json",
     },

@@ -4,6 +4,7 @@ import LoginPage from "./pages/public/Login";
 import UserRoute from "./layouts/user";
 import HomePageUser from "./pages/user/Home";
 import AdminRoute from "./layouts/admin";
+import HomePageAdmin from "./pages/admin/Home";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
           path="/admin"
           element={
             <AdminRoute>
-              <div> Hello Admin</div>
+              <HomePageAdmin />
             </AdminRoute>
           }
         />
