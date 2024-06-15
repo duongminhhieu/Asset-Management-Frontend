@@ -5,7 +5,7 @@ function HeaderUser() {
   const navigate = useNavigate();
 
   return (
-    <Header className=" bg-[#CF2338] drop-shadow-md flex items-center lg:h-20 justify-center sticky top-0 left-0 z-50">
+    <Header className=" bg-[#CF2338] drop-shadow-md flex items-center h-20 justify-center sticky top-0 left-0 z-50">
       <div className="flex justify-between items-center w-full">
         <div
           className="flex justify-center items-center cursor-pointer"

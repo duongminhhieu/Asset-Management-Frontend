@@ -1,17 +1,17 @@
 import { Layout } from "antd";
 import { PropsWithChildren } from "react";
-import FooterPublic from "../../public/FooterPublic";
-import HeaderUser from "../../user/HeaderUser";
+import FooterPublic from "../public/FooterPublic";
+import HeaderUser from "./HeaderUser";
 import { Navigate } from "react-router-dom";
 
-type PublicRouteProps = PropsWithChildren;
+type UserRouteProps = PropsWithChildren;
 
-function UserRoute({ children }: PublicRouteProps) {
+function UserRoute({ children }: UserRouteProps) {
   // get user from local storage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // if user is not logged in redirect to login page
-  if (!user?.id || !user?.role?.name) {
+  if (!user?.id || user?.role?.name !== "USER") {
     return <Navigate to="/login" />;
   }
 

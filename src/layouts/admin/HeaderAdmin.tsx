@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import { Header } from "antd/es/layout/layout";
+import { useNavigate } from "react-router-dom";
 
-function HeaderPublic() {
+function HeaderAdmin() {
   const navigate = useNavigate();
 
   return (
@@ -23,4 +23,4 @@ function HeaderPublic() {
   );
 }
 
-export default HeaderPublic;
+export default HeaderAdmin;

@@ -44,8 +44,8 @@ function LoginPage() {
     setIsButtonDisabled(!username || !password);
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    await mutate(values);
+  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+    mutate(values);
   };
 
   return (
@@ -57,7 +57,7 @@ function LoginPage() {
               Welcome to Online Asset Management
             </div>
           }
-          className="mt-10 w-1/3 border border-black"
+          className="mt-10 lg:w-1/3 w-2/3 border border-black"
           bordered={true}
         >
           <Form

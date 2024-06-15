@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import PublicRoute from "./layouts/routes/public";
+import PublicRoute from "./layouts/public";
 import LoginPage from "./pages/public/Login";
-import UserRoute from "./layouts/routes/user";
+import UserRoute from "./layouts/user";
 import HomePageUser from "./pages/user/Home";
+import AdminRoute from "./layouts/admin";
 
 function App() {
   return (
@@ -18,7 +19,14 @@ function App() {
         />
 
         {/* Admin Route */}
-        <Route path="/admin" element={<div> Hello Admin</div>} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <div> Hello Admin</div>
+            </AdminRoute>
+          }
+        />
 
         {/* User Route */}
         <Route
