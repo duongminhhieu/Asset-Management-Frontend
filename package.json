@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "coverage": "npm test -- --coverage --watchAll",
+    "coverage": "npm test -- --coverage --watchAll --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**' --collectCoverageFrom='src/pages/**'",
     "test": "jest",
     "dev": "vite",
     "build": "tsc && vite build",

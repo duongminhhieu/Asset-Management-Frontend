@@ -67,7 +67,7 @@ describe("LoginPage", () => {
 
     renderComponent();
 
-    await act(() => {
+    await act(async () => {
       fireEvent.change(screen.getByLabelText("Username"), {
         target: { value: "testuser" },
       });
@@ -99,7 +99,7 @@ describe("LoginPage", () => {
 
     renderComponent();
 
-    await act(() => {
+    await act(async () => {
       fireEvent.change(screen.getByLabelText("Username"), {
         target: { value: "testuser" },
       });

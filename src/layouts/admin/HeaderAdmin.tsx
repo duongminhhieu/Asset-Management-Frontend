@@ -29,9 +29,6 @@ function HeaderAdmin() {
 
   // handlers
 
-  const showModal = () => {
-    setOpen(true);
-  };
   const handleOk = () => {
     setOpen(false);
   };

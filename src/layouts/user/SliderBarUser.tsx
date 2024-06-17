@@ -1,4 +1,4 @@
-import BannerLogoComponent from "@/components/BannerLogoComponent";
+import BannerLogoComponent from "@/components/BannerLogoComponent/BannerLogoComponent";
 import { Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { useNavigate } from "react-router-dom";
