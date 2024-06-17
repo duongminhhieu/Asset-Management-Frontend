@@ -1,8 +1,9 @@
 import { Layout } from "antd";
 import { PropsWithChildren } from "react";
-import { Navigate } from "react-router-dom";
 import FooterPublic from "../public/FooterPublic";
 import HeaderAdmin from "./HeaderAdmin";
+import SliderBarAdmin from "./SliderBarAdmin";
+import { Navigate } from "react-router-dom";
 
 type AdminRouteProps = PropsWithChildren;
 
@@ -11,7 +12,7 @@ function AdminRoute({ children }: AdminRouteProps) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // if user is not logged in redirect to login page
-  if (!user?.id || !user?.role?.name) {
+  if (!user?.id || !user?.type) {
     return <Navigate to="/login" />;
   }
 
@@ -20,7 +21,8 @@ function AdminRoute({ children }: AdminRouteProps) {
       <Layout className="min-h-screen">
         <HeaderAdmin />
         <Layout>
-          <Layout className="mt-4 mx-10 ">{children}</Layout>
+          <SliderBarAdmin />
+          <Layout className="mt-16 mx-10">{children}</Layout>
         </Layout>
         <FooterPublic />
       </Layout>

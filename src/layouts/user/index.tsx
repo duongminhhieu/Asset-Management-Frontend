@@ -3,6 +3,7 @@ import { PropsWithChildren } from "react";
 import FooterPublic from "../public/FooterPublic";
 import HeaderUser from "./HeaderUser";
 import { Navigate } from "react-router-dom";
+import SliderBarUser from "./SliderBarUser";
 
 type UserRouteProps = PropsWithChildren;
 
@@ -11,7 +12,7 @@ function UserRoute({ children }: UserRouteProps) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // if user is not logged in redirect to login page
-  if (!user?.id || user?.role?.name !== "USER") {
+  if (!user?.id || user?.type !== "USER") {
     return <Navigate to="/login" />;
   }
 
@@ -20,6 +21,7 @@ function UserRoute({ children }: UserRouteProps) {
       <Layout className="min-h-screen">
         <HeaderUser />
         <Layout>
+          <SliderBarUser />
           <Layout className="mt-4 mx-10 ">{children}</Layout>
         </Layout>
         <FooterPublic />

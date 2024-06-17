@@ -29,6 +29,24 @@ function App() {
           }
         />
 
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <div>ManageUser</div>
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/assets"
+          element={
+            <AdminRoute>
+              <div>ManageAsset</div>
+            </AdminRoute>
+          }
+        />
+
         {/* User Route */}
         <Route
           path="/"

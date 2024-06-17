@@ -1,22 +1,19 @@
+import getListBreadcrumb from "@/utils/getListBreadcrumb";
+import { Breadcrumb } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { useNavigate } from "react-router-dom";
 
-function HeaderUser() {
-  const navigate = useNavigate();
-
+function HeaderUser({}) {
   return (
     <Header className=" bg-[#CF2338] drop-shadow-md flex items-center h-20 justify-center sticky top-0 left-0 z-50">
       <div className="flex justify-between items-center w-full">
-        <div
-          className="flex justify-center items-center cursor-pointer"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          <img src="/nashtech-logo.png" className="w-16 mr-8" alt="logo" />
-          <h1 className="text-2xl font-semibold text-white font-serif">
-            Online Asset Management
-          </h1>
+        <div className="text-white">
+          <Breadcrumb
+            separator={
+              <div className="text-white text-base font-normal"> {">"} </div>
+            }
+            className="font-semibold cursor-pointer text-lg"
+            items={getListBreadcrumb(window.location.pathname)}
+          />
         </div>
       </div>
     </Header>

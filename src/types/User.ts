@@ -1,15 +1,13 @@
 
 export type User = {
     id: number;
+    username: string;
     firstName: string;
     lastName: string;
     dob: Date;
     gender: string;
     joinDate: Date;
-    role: Role;
+    type: string;
     location: string;
 }
 
-export type Role = {
-    name: string;
-}
