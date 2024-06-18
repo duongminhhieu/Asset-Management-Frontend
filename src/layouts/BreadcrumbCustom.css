@@ -1,0 +1,10 @@
+/* BreadcrumbCustom.css */
+
+.ant-breadcrumb a {
+    color: #ffffff !important; /* Change this to your desired color */
+  }
+  
+  .ant-breadcrumb span {
+    color: #ffffff !important; /* Change this to your desired color */
+  }
+  

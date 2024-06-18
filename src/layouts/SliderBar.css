@@ -1,0 +1,18 @@
+/* SliderBarAdmin.css */
+
+.ant-menu-item {
+    padding: 12px 20px !important; /* Adjust padding */
+    height: 50px !important; /* Adjust height */
+  }
+  
+  .ant-menu-item .text-lg {
+    font-size: 16px; /* Adjust font size */
+  }
+  
+  .ant-menu-item-selected {
+    background-color: #CF2238 !important; /* Custom selected item color */
+    color: #fff !important; /* Custom selected item text color */
+  }
+  
+
+  
