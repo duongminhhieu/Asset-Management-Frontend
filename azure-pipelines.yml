@@ -20,7 +20,9 @@ steps:
     displayName: "Install Node.js"
 
   - script: |
+      rm -rf node_modules
+      rm -f package-lock.json
       npm install
       npm audit fix
       npm run build
-    displayName: "npm install, audit and build"
+    displayName: "Clean install and build"
