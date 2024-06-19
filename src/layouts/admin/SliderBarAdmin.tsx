@@ -66,15 +66,16 @@ function SliderBarAdmin() {
           ]}
           onClick={onClick}
           mode="inline"
-        >
-          {items.map((item) => (
-            <Menu.Item key={item.key} className="custom-menu-item bg-[#EFF1F5]">
+          items={items.map((item) => ({
+            key: item.key,
+            label: (
               <div className="text-lg font-semibold">
                 <span>{item.label}</span>
               </div>
-            </Menu.Item>
-          ))}
-        </Menu>
+            ),
+            className: "custom-menu-item bg-[#EFF1F5]",
+          }))}
+        />
       </Sider>
     </>
   );

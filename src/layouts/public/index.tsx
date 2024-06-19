@@ -9,7 +9,6 @@ type PublicRouteProps = PropsWithChildren;
 export default function PublicRoute({ children }: PublicRouteProps) {
   // get user from local storage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  console.log(user);
 
   // if user logged in redirect to home page
   if (user?.id && user?.role?.name === "USER") {

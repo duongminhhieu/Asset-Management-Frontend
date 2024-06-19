@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { User } from "../types/User";
 import { APIConstants } from "./api.constant";
 import APIResponse from "../types/APIResponse";
+import { EUserStatus } from "@/enums/UserStatus.enum";
 
 
 const instance = axios.create({
@@ -31,7 +32,7 @@ instance.interceptors.response.use(
     (res: AxiosResponse) => {
         isExpired = false;
         const url: string | undefined = res.config.url;
-        if (url === APIConstants.AUTH.LOGIN && res.data) {
+        if (url === APIConstants.AUTH.LOGIN && res.data.result?.user && res.data.result?.user.status !== EUserStatus.FIRST_LOGIN) {
             const response: APIResponse = res.data;
             const user: User = response.result?.user;
             const token: string = response.result?.token;
@@ -41,7 +42,6 @@ instance.interceptors.response.use(
         return res;
     },
     (err: AxiosError) => {
-        console.log(err);
         if (
             (err?.response?.status === 401 && !isExpired) ||
             (err?.response?.status === 403 && !isExpired)

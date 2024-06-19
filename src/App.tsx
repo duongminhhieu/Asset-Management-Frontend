@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import PublicRoute from "./layouts/public";
-import LoginPage from "./pages/public/Login";
+import LoginPage from "./pages/public/Login/LoginPage";
 import UserRoute from "./layouts/user";
 import HomePageUser from "./pages/user/Home";
 import AdminRoute from "./layouts/admin";

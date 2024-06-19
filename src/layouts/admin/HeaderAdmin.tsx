@@ -76,7 +76,7 @@ function HeaderAdmin() {
             />
           </div>
 
-          <Dropdown placement="bottomCenter" arrow menu={{ items }}>
+          <Dropdown placement="bottom" arrow menu={{ items }}>
             <Space className="cursor-pointer hover:opacity-75">
               <span className="text-white font-semibold">{user.username}</span>
               <CaretDownOutlined className="text-white" />

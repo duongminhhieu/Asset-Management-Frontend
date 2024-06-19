@@ -4,6 +4,10 @@ import { AuthAPICaller } from "../../../services/apis/auth.api";
 import { useMutation } from "react-query";
 import APIResponse from "../../../types/APIResponse";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { JwtType } from "@/types/JwtType";
+import ModalChangePassword from "./components/ModalChangePassword";
+import { EUserStatus } from "@/enums/UserStatus.enum";
 
 type FieldType = {
   username?: string;
@@ -13,13 +17,15 @@ type FieldType = {
 function LoginPage() {
   // state
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [token, setToken] = useState<string>("");
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [form] = Form.useForm<FieldType>();
 
   // hooks
   const navigate = useNavigate();
 
   // query
-  const { mutate, isLoading, isError, error, isSuccess } = useMutation(
+  const { mutate, isLoading, isError, error, isSuccess, data } = useMutation(
     AuthAPICaller.login
   );
 
@@ -28,12 +34,19 @@ function LoginPage() {
     if (isError) {
       const errorResponse = (error as { response: { data: APIResponse } })
         .response.data;
-      message.error(errorResponse.message);
+      if (errorResponse.internalCode === 1006) {
+        message.error("Username or password is incorrect. Please try again");
+      } else {
+        message.error(errorResponse.message);
+      }
     }
 
     if (isSuccess) {
-      message.success("Login success");
-      navigate("/");
+      if (isFirstLogin()) {
+        setIsOpenModal(true);
+      } else {
+        navigate("/");
+      }
     }
   }, [isError, isSuccess]);
 
@@ -48,6 +61,17 @@ function LoginPage() {
     mutate(values);
   };
 
+  const isFirstLogin = () => {
+    const response = data?.data as APIResponse;
+    setToken(response.result?.token);
+    const decoded: JwtType = jwtDecode(response.result?.token);
+
+    if (decoded.status === EUserStatus.FIRST_LOGIN) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <div className="flex items-center justify-center">
@@ -57,12 +81,14 @@ function LoginPage() {
               Welcome to Online Asset Management
             </div>
           }
-          className="mt-10 lg:w-1/3 w-2/3 border border-black"
+          className="mt-10 lg:w-1/3 w-3/4 border border-black"
           bordered={true}
         >
           <Form
             form={form}
-            name="basic"
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 25 }}
+            name="form_login"
             onFinish={onFinish}
             autoComplete="on"
             onFieldsChange={handleFieldsChange}
@@ -91,8 +117,8 @@ function LoginPage() {
               <Button
                 danger
                 type="primary"
+                color="#CF2338"
                 htmlType="submit"
-                className="bg-[#E20D1]"
                 disabled={isButtonDisabled}
                 loading={isLoading}
               >
@@ -102,6 +128,10 @@ function LoginPage() {
           </Form>
         </Card>
       </div>
+
+      {token.length > 0 && (
+        <ModalChangePassword isOpen={isOpenModal} token={token} />
+      )}
     </>
   );
 }

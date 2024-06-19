@@ -10,7 +10,7 @@ export class APIConstants {
     static USER = {
         GET_USER: '/user',
         UPDATE_USER: '/user',
-        CHANGE_PASSWORD: (userId: string) => `/user/${userId}/change-password`,
+        FIRST_CHANGE_PASSWORD: `/users/first-change-password`,
     };
 
 }
