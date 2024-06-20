@@ -2,7 +2,7 @@ import { EInternalCode } from "@/enums/InternalCode.enum";
 import { UserAPICaller } from "@/services/apis/user.api";
 import APIResponse from "@/types/APIResponse";
 import { ValidatorType, validatorPassword } from "@/utils/validator";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -187,12 +187,14 @@ function ModalChangePassword({
             </p>
           </div>
         }
+        maskClosable={false}
         closable={false}
         open={isSuccessModalOpen}
         footer={
           <Button
             key="cancel"
             onClick={() => {
+              message.success("Please login again to continue");
               navigate("/login");
             }}
           >
