@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 
-function ModalChangePassword({
+function ModalFirstChangePassword({
   isOpen,
   token,
 }: {
@@ -112,4 +112,4 @@ function ModalChangePassword({
   );
 }
 
-export default ModalChangePassword;
+export default ModalFirstChangePassword;

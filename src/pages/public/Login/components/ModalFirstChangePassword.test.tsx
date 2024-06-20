@@ -1,19 +1,19 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import ModalChangePassword from "./ModalChangePassword";
+import ModalChangePassword from "./ModalFirstChangePassword";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 import { AxiosHeaders, AxiosResponse } from "axios";
 import APIResponse from "@/types/APIResponse";
 import { UserAPICaller } from "@/services/apis/user.api";
 
-// Mock the
+// Mock
 jest.mock("@/services/apis/user.api");
 const mockedUserAPICaller = UserAPICaller as jest.Mocked<typeof UserAPICaller>;
 
 const testToken =
   "eyJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiQURNSU4iLCJzdGF0dXMiOiJBQ1RJVkUiLCJzdWIiOiJhZG1pbkBsb2NhbC5jb20iLCJpYXQiOjE3MTg3MDQ1MjIsImV4cCI6MTcxOTMwOTMyMiwianRpIjoiZTFmM2JjNzktM2RmYy00MjI3LTg2NTgtNTFiMDE2MDM1YmNkIn0.Icokli_mT_wSODOzWsZbuvG06-xMQusjv5wvCpIO23c";
 
-describe("ModalChangePassword", () => {
+describe("ModalFirstChangePassword", () => {
   const renderComponent = () => {
     const queryClient = new QueryClient();
 

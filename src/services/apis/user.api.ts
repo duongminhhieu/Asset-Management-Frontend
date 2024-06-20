@@ -17,4 +17,5 @@ export class UserAPICaller {
         return axios.patch(APIConstants.USER.FIRST_CHANGE_PASSWORD, body, config)
     };
 
+    static changePassword = (body = {}) => instance.patch(APIConstants.USER.CHANGE_PASSWORD, body);
 }

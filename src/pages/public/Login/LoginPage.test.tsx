@@ -11,6 +11,7 @@ import { AuthAPICaller } from "../../../services/apis/auth.api";
 import LoginPage from "./LoginPage";
 import { AxiosHeaders, AxiosResponse } from "axios";
 import APIResponse from "@/types/APIResponse";
+import { EInternalCode } from "@/enums/InternalCode.enum";
 
 // Mock the AuthAPICaller
 jest.mock("../../../services/apis/auth.api");
@@ -95,7 +96,7 @@ describe("LoginPage", () => {
   test("should show error message when login API fails", async () => {
     const response: AxiosResponse = {
       data: {
-        internalCode: 1006,
+        internalCode: EInternalCode.EMAIL_OR_PASSWORD_INCORRECT,
         message: "Username or password is incorrect",
       } as APIResponse,
       status: 400,

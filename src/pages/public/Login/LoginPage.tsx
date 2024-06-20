@@ -6,8 +6,9 @@ import APIResponse from "../../../types/APIResponse";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { JwtType } from "@/types/JwtType";
-import ModalChangePassword from "./components/ModalChangePassword";
 import { EUserStatus } from "@/enums/UserStatus.enum";
+import { EInternalCode } from "@/enums/InternalCode.enum";
+import ModalFirstChangePassword from "./components/ModalFirstChangePassword";
 
 type FieldType = {
   username?: string;
@@ -34,7 +35,9 @@ function LoginPage() {
     if (isError) {
       const errorResponse = (error as { response: { data: APIResponse } })
         .response.data;
-      if (errorResponse.internalCode === 1006) {
+      if (
+        errorResponse.internalCode === EInternalCode.EMAIL_OR_PASSWORD_INCORRECT
+      ) {
         message.error("Username or password is incorrect. Please try again");
       } else {
         message.error(errorResponse.message);
@@ -130,7 +133,7 @@ function LoginPage() {
       </div>
 
       {token.length > 0 && (
-        <ModalChangePassword isOpen={isOpenModal} token={token} />
+        <ModalFirstChangePassword isOpen={isOpenModal} token={token} />
       )}
     </>
   );

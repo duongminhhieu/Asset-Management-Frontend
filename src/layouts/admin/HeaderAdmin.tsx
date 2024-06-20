@@ -4,23 +4,16 @@ import {
   KeyOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import {
-  MenuProps,
-  Dropdown,
-  Space,
-  message,
-  Modal,
-  Button,
-  Breadcrumb,
-} from "antd";
+import { MenuProps, Dropdown, Space, message, Breadcrumb } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "@/layouts/BreadcrumbCustom.css";
 import getListBreadcrumb from "@/utils/getListBreadcrumb";
+import ModalChangePassword from "@/components/ModalChangePassword/ModalChangePassword";
 
 function HeaderAdmin() {
-  const [open, setOpen] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   // hooks
   const navigate = useNavigate();
@@ -29,21 +22,13 @@ function HeaderAdmin() {
 
   // handlers
 
-  const handleOk = () => {
-    setOpen(false);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
   const items: MenuProps["items"] = [
     {
       label: "Change Password",
       key: "change-password",
       icon: <KeyOutlined />,
       onClick: () => {
-        message.info("Coming soon!");
+        setIsOpenModal(true);
       },
     },
 
@@ -84,25 +69,10 @@ function HeaderAdmin() {
           </Dropdown>
         </div>
       </Header>
-
-      <Modal
-        open={open}
-        title={
-          <div className="text-red-600 text-base flex justify-center">
-            Are you sure?
-          </div>
-        }
-        onOk={handleOk}
-        closable={false}
-        onCancel={handleCancel}
-        footer={(_, { OkBtn, CancelBtn }) => (
-          <>
-            <Button>Custom Button</Button>
-            <CancelBtn />
-            <OkBtn />
-          </>
-        )}
-      ></Modal>
+      <ModalChangePassword
+        isOpen={isOpenModal}
+        setIsOpenModal={setIsOpenModal}
+      />
     </>
   );
 }

@@ -32,10 +32,10 @@ export const validatorPassword = (value: string) => {
             message: "Password must contain at least one digit."
         }
     }
-    if (!/[@$!%*?&]/.test(value)) {
+    if (!/[@#$%^&+=]/.test(value)) {
         return {
             isValid: false,
-            message: "Password must contain at least one special character."
+            message: "Password must contain at least one special character(@#$%^&+=)."
         }
     }
     if (value.length < 8) {
