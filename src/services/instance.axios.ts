@@ -56,7 +56,7 @@ instance.interceptors.response.use(
             window.location.href = '/login';
         } else {
             return Promise.reject(err)
-        };
+        }
     }
 );
 

@@ -14,4 +14,12 @@ export class APIConstants {
         CHANGE_PASSWORD: `/users/change-password`,
     };
 
+    static CATEGORY = {
+        GET_ALL_CATEGORIES: '/categories',
+        CREATE_CATEGORY: '/categories'
+    }
+
+    static ASSET = {
+        CREATE_ASSET: '/assets'
+    }
 }

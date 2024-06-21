@@ -5,6 +5,7 @@ import UserRoute from "./layouts/user";
 import HomePageUser from "./pages/user/Home";
 import AdminRoute from "./layouts/admin";
 import HomePageAdmin from "./pages/admin/Home";
+import AddAsset from "./pages/admin/AddAsset/AddAsset";
 
 function App() {
   return (
@@ -43,6 +44,24 @@ function App() {
           element={
             <AdminRoute>
               <div>ManageAsset</div>
+            </AdminRoute>
+          }
+        />
+
+        {/* <Route
+          path="/addasset"
+          element={
+            <PublicRoute>
+              <AddAsset />
+            </PublicRoute>
+          }
+        /> */}
+
+        <Route
+          path="/admin/assets/create-asset"
+          element={
+            <AdminRoute>
+              <AddAsset />
             </AdminRoute>
           }
         />

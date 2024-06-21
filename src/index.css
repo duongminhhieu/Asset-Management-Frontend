@@ -2,15 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* custom-radio.css */
+
+/* Change the radio button border and background color */
+/* .ant-radio .ant-radio-inner {
+  border-color: red;
+} */
+
 :root {
-    --primary-color: #CF2338; 
-    --secondary-color: #E9424D;
-  }
-  
+  --primary-color: #CF2338; 
+  --secondary-color: #E9424D;
+}
+
 .primary-color {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .secondary-color {
-    color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.ant-radio:hover .ant-radio-inner,
+.ant-radio-input:focus + .ant-radio-inner {
+  border-color: red;
+}
+
+.ant-radio-checked .ant-radio-inner {
+  background-color: red !important;
+  border-color: red !important;
+}
+
+.ant-radio-inner::after {
+  background-color: #fff; /* Change the dot color inside the radio button */
+}
+
+/* Change the label color if needed */
+.ant-radio-wrapper:hover .ant-radio .ant-radio-inner {
+  border-color: gray;
 }
