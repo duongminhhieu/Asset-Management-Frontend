@@ -2,17 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* custom-radio.css */
 
 /* Change the radio button border and background color */
 /* .ant-radio .ant-radio-inner {
   border-color: red;
 } */
+body {
+  background-color: #f5f5f5;
+}
 
 :root {
-  --primary-color: #CF2338; 
-  --secondary-color: #E9424D;
+  --primary-color: #cf2338;
+  --secondary-color: #e9424d;
 }
 
 .primary-color {

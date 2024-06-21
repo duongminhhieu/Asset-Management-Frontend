@@ -9,7 +9,8 @@ function SearchFieldComponent({
   return (
     <div>
       <Search
-        placeholder="input search text"
+        id="search user"
+        placeholder="input search text "
         onSearch={onSearch}
         className="w-64"
       />

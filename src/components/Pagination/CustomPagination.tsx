@@ -41,7 +41,7 @@ const CustomPagination: React.FC<Props> = ({ totalItems }) => {
             Pagination: {
               colorPrimary: "#CF2338",
               colorPrimaryBorder: "#E9424D",
-              colorPrimaryHover:"#CF2338",
+              colorPrimaryHover: "#CF2338",
             },
           },
         }}

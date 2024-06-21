@@ -2,17 +2,28 @@ import { FilterFilled } from "@ant-design/icons";
 import { Button, Flex, Popover, Space } from "antd";
 import CheckBoxGroup from "./CheckBoxGroup";
 import ExclusiveCheckBoxes from "./ExclusiveCheckBoxes";
-interface Props{
+interface Props {
   title: string;
   options: string[];
-  paramName:string;
-  allowedMultiple?:boolean;
+  paramName: string;
+  allowedMultiple?: boolean;
 }
-const Filter = ({title, options ,paramName, allowedMultiple=false}:Props) => {
+const Filter = ({
+  title,
+  options,
+  paramName,
+  allowedMultiple = false,
+}: Props) => {
   return (
     <Flex>
       <Popover
-        content={allowedMultiple?<CheckBoxGroup options={options} paramName={paramName} />:<ExclusiveCheckBoxes options={options} paramName={paramName} />}
+        content={
+          allowedMultiple ? (
+            <CheckBoxGroup options={options} paramName={paramName} />
+          ) : (
+            <ExclusiveCheckBoxes options={options} paramName={paramName} />
+          )
+        }
         trigger="click"
         placement="bottomRight"
       >
@@ -22,7 +33,7 @@ const Filter = ({title, options ,paramName, allowedMultiple=false}:Props) => {
             <FilterFilled />
           </Button>
         </Space.Compact>
-        <div/>
+        <div />
       </Popover>
     </Flex>
   );
