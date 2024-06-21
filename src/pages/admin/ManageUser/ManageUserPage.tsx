@@ -13,10 +13,13 @@ import { useEffect, useState } from "react";
 import type { TableProps } from "antd/es/table";
 import APIResponse from "@/types/APIResponse";
 import { SorterResult } from "antd/es/table/interface";
+import UserDetailsModal from "./components/UserDetailsModal";
 
 function ManageUserPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [userData, setUserData] = useState<User>();
   const [items, setItems] = useState<User[]>([]);
 
   const onSearch = (value: string) => {
@@ -50,16 +53,29 @@ function ManageUserPage() {
     if (isError) {
       const errorResponse = (error as { response: { data: APIResponse } })
         .response.data;
-      // console.log("error:", errorResponse);
       message.error(errorResponse.message);
     }
 
     if (isSuccess) {
-      console.log("data 1:", queryData.data.result.data);
-
       setItems(queryData.data.result.data);
     }
-  }, [isError, isSuccess, queryData]);
+  }, [error, isError, isSuccess, queryData]);
+
+  const baseUser:User = {
+    id: 0,
+    staffCode: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+    joinDate: new Date(),
+    dob: new Date(),
+    gender: "",
+    status: "",
+    type: "",
+    location: {
+      id: 0,
+      name: ""
+    }} 
 
   const columns: TableColumnsType<User> = [
     {
@@ -106,14 +122,14 @@ function ManageUserPage() {
       render: () => (
         <div className="flex space-x-5">
           <EditOutlined
-            onClick={() => {
-              console.log("edit");
+            onClick={(e) => {
+              e.stopPropagation();
             }}
           />
           <CloseCircleOutlined
             style={{ color: "red" }}
-            onClick={() => {
-              console.log("Delete");
+            onClick={(e) => {
+              e.stopPropagation();
             }}
           />
         </div>
@@ -130,7 +146,6 @@ function ManageUserPage() {
     sorter = sorter as SorterResult<User>;
     const { field, order } = sorter;
 
-    console.log("sorter: ", field, order, sorter);
     const fieldString = field as string;
     setSearchParams((searchParams) => {
       searchParams.set("orderBy", fieldString);
@@ -184,13 +199,25 @@ function ManageUserPage() {
           dataSource={items}
           rowKey={(record) => record.id}
           onChange={handleTableChange}
+          onRow={(_,index)=>{
+            return {
+              onClick: (e)=>{
+                e.stopPropagation()
+                setUserData(items[index || 0]);
+                setShowModal(true);
+
+              }
+            }
+          }}
         ></Table>
         <div className="pt-8 flex justify-end">
           <CustomPagination
-            totalItems={queryData?.data.result.data.length}
+            totalItems={queryData?.data.result.total}
           ></CustomPagination>
         </div>
       </div>
+      <UserDetailsModal  show={showModal} data={ userData ||
+      baseUser} handleClose={() => {setShowModal(false);}}/>
     </div>
   );
 }
