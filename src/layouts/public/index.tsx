@@ -11,7 +11,7 @@ export default function PublicRoute({ children }: PublicRouteProps) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // if user logged in redirect to home page
-  if (user?.id && user?.role?.name === "USER") {
+  if (user?.id && user?.type === "USER") {
     return <Navigate to="/" />;
   }
 

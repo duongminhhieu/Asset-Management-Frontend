@@ -111,6 +111,10 @@ function LoginPage() {
               name="password"
               rules={[
                 { required: true, message: "Please input your password!" },
+                {
+                  max: 128,
+                  message: "Password must be less than 128 characters!",
+                },
               ]}
             >
               <Input.Password />

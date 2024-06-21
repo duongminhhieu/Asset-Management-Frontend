@@ -44,6 +44,12 @@ export const validatorPassword = (value: string) => {
             message: "Password must be at least 8 characters long."
         }
     }
+    if (value.length > 128) {
+        return {
+            isValid: false,
+            message: "Password must be at most 128 characters long."
+        }
+    }
 
     return {
         isValid: true,

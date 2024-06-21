@@ -12,7 +12,7 @@ function AdminRoute({ children }: AdminRouteProps) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // if user is not logged in redirect to login page
-  if (!user?.id || !user?.type) {
+  if (!user?.id || user?.type !== "ADMIN") {
     return <Navigate to="/login" />;
   }
 
