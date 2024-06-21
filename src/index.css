@@ -8,22 +8,6 @@
 /* .ant-radio .ant-radio-inner {
   border-color: red;
 } */
-body {
-  background-color: #f5f5f5;
-}
-
-:root {
-  --primary-color: #cf2338;
-  --secondary-color: #e9424d;
-}
-
-.primary-color {
-  color: var(--primary-color);
-}
-
-.secondary-color {
-  color: var(--secondary-color);
-}
 
 .ant-radio:hover .ant-radio-inner,
 .ant-radio-input:focus + .ant-radio-inner {
@@ -42,4 +26,23 @@ body {
 /* Change the label color if needed */
 .ant-radio-wrapper:hover .ant-radio .ant-radio-inner {
   border-color: gray;
+}
+.ant-select-item-option-content {
+  overflow: initial;
+}
+body {
+  background-color: #f5f5f5;
+}
+
+:root {
+  --primary-color: #cf2338;
+  --secondary-color: #e9424d;
+}
+
+.primary-color {
+  color: var(--primary-color);
+}
+
+.secondary-color {
+  color: var(--secondary-color);
 }

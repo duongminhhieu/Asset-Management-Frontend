@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Selector from "./components/Selector";
 import {
   Button,
@@ -12,18 +12,21 @@ import {
 import { AssetAPICaller } from "@/services/apis/asset.api";
 import APIResponse from "../../../types/APIResponse";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { Asset } from "@/types/Asset";
 
 interface FormValues {
   name?: string;
   category?: string;
   specification?: string;
   installedDate?: Date;
-  state?: "available" | "not_available";
+  state: "available" | "not_available";
 }
 
-const App: React.FC = () => {
+function AddAsset() {
   const [form] = Form.useForm<FormValues>();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const navigate = useNavigate();
 
   // query
   const { mutate, data, isLoading, isError, error, isSuccess } = useMutation(
@@ -39,13 +42,25 @@ const App: React.FC = () => {
     }
 
     if (isSuccess) {
-      message.success("Create success");
-      console.log(data.data.result);
+      const newAsset: Asset = data.data.result;
+      navigate("/admin/assets", {
+        state: {
+          message: "Create success",
+          asset: newAsset,
+        },
+      });
     }
   }, [isError, isSuccess]);
 
   const onFinish = (values: FormValues) => {
+    if (values.category && typeof values.category === "object") {
+      values.category = values.category["name"];
+    }
     mutate(values);
+  };
+
+  const handleCancel = () => {
+    navigate("/admin/assets");
   };
 
   // Custom validator to check if the value is not null or whitespace
@@ -58,23 +73,6 @@ const App: React.FC = () => {
     );
   };
 
-  // Custom validator to datetime
-  const validateInstalledDate = (_: unknown, value: Date) => {
-    if (!value) {
-      return Promise.reject("Please select the installed date!");
-    }
-
-    const today = new Date();
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(today.getMonth() - 3);
-
-    if (value > threeMonthsAgo) {
-      return Promise.resolve();
-    }
-
-    return Promise.reject("Installed date must be less than 3 months ago!");
-  };
-
   // handlers
   const handleFieldsChange = async () => {
     const name = form.getFieldValue("name");
@@ -85,8 +83,10 @@ const App: React.FC = () => {
     threeMonthsAgo.setMonth(new Date().getMonth() - 3);
 
     setIsButtonDisabled(
-      /^\s|\s$/.test(name) ||
+      !name ||
+        /^\s|\s$/.test(name) ||
         !category ||
+        !specification ||
         /^\s|\s$/.test(specification) ||
         !installDate ||
         installDate < threeMonthsAgo
@@ -153,7 +153,29 @@ const App: React.FC = () => {
         label="Installed Date"
         name="installDate"
         hasFeedback
-        rules={[{ validator: validateInstalledDate }]}
+        rules={[
+          () => ({
+            validator(_: unknown, value: Date) {
+              if (!value) {
+                return Promise.reject(
+                  new Error("Please select the installed date!")
+                );
+              }
+
+              const today = new Date();
+              const threeMonthsAgo = new Date();
+              threeMonthsAgo.setMonth(today.getMonth() - 3);
+
+              if (value > threeMonthsAgo) {
+                return Promise.resolve();
+              }
+
+              return Promise.reject(
+                new Error("Installed date must be less than 3 months ago!")
+              );
+            },
+          }),
+        ]}
         labelAlign="left"
       >
         <DatePicker style={{ width: "100%" }} />
@@ -163,12 +185,16 @@ const App: React.FC = () => {
       <Form.Item
         initialValue="available"
         name="state"
-        label="State"
+        // label="State"
         labelAlign="left"
       >
-        <Radio.Group className="flex flex-col">
-          <Radio value="available">Available</Radio>
-          <Radio value="not_available">Not Available</Radio>
+        <Radio.Group className="flex flex-col" aria-label="State">
+          <Radio id="state" value="available" aria-label="Available">
+            Available
+          </Radio>
+          <Radio id="state" value="not_available" aria-label="Not Available">
+            Not Available
+          </Radio>
         </Radio.Group>
       </Form.Item>
 
@@ -177,9 +203,10 @@ const App: React.FC = () => {
         className="button-container"
         style={{ display: "flex", justifyContent: "flex-end", gap: "20px" }}
       >
-        <Form.Item label="">
+        <Form.Item>
           <Button
             type="primary"
+            name="save"
             danger
             htmlType="submit"
             disabled={isButtonDisabled}
@@ -189,11 +216,11 @@ const App: React.FC = () => {
           </Button>
         </Form.Item>
         <Form.Item label="">
-          <Button>Cancel</Button>
+          <Button onClick={handleCancel}>Cancel</Button>
         </Form.Item>
       </div>
     </Form>
   );
-};
+}
 
-export default App;
+export default AddAsset;

@@ -4,6 +4,7 @@ import { CategoryAPICaller } from "../../../../services/apis/category.api";
 import { useMutation } from "react-query";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import APIResponse from "../../../../types/APIResponse";
+import { Category } from "@/types/Category";
 
 // type
 type FieldType = {
@@ -11,22 +12,17 @@ type FieldType = {
   code?: string;
 };
 
-interface Item {
-  name: string;
-}
-
 // prepare for send and get data from parent
 interface ClickableTextProps {
-  items: Item[];
-  setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  items: Category[];
+  setItems: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
+function AddCategoryButton({ items, setItems }: ClickableTextProps) {
   // state
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [showInputs, setShowInputs] = useState(false);
   const [form] = Form.useForm<FieldType>();
-
   // query
   const { mutate, data, isLoading, isError, error, isSuccess } = useMutation(
     CategoryAPICaller.createNew
@@ -38,7 +34,6 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
       const errorResponse = (error as { response: { data: APIResponse } })
         .response.data;
       message.error(errorResponse.message);
-      console.log(error);
     }
 
     if (isSuccess) {
@@ -46,8 +41,9 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
         name: "",
         code: "",
       });
+      const newCategory: Category = data.data.result;
       setShowInputs(false);
-      setItems([...items, { name: data.data.result.name }]);
+      setItems([...items, newCategory]);
       message.success("Category added successfully");
     }
   }, [isError, isSuccess]);
@@ -65,7 +61,9 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
     );
   };
 
-  const handleTextClick = () => setShowInputs(true);
+  const handleTextClick = () => {
+    setShowInputs(true);
+  };
 
   const handleCancelClick = () => {
     setShowInputs(false);
@@ -80,10 +78,9 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
     mutate(values);
   };
 
-  // Custom validator to check if the value is not null or whitespace
-  const validateWhitespace = (_: unknown, value: string) => {
+  const validateCode = (_: unknown, value: string) => {
     if (!value) {
-      return Promise.reject(new Error("Length is 2"));
+      return Promise.reject(new Error("Not null"));
     }
 
     if (value && /^\s|\s$/.test(value)) {
@@ -92,6 +89,22 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
 
     if (value && value.length != 2) {
       return Promise.reject(new Error("Length is 2"));
+    }
+
+    return Promise.resolve();
+  };
+
+  const validateName = (_: unknown, value: string) => {
+    if (!value) {
+      return Promise.reject(new Error("Not null"));
+    }
+
+    if (value && /^\s|\s$/.test(value)) {
+      return Promise.reject(new Error("No spaces"));
+    }
+
+    if (value && value.length > 255) {
+      return Promise.reject(new Error("Length less than 255"));
     }
 
     return Promise.resolve();
@@ -114,19 +127,18 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <Form.Item<FieldType>
+              aria-label="Name"
               name="name"
-              rules={[
-                { required: true, message: "Name not null" },
-                { max: 255, message: "Max length is 255" },
-              ]}
+              rules={[{ validator: validateName }]}
               style={{ width: "80%" }}
             >
               <Input placeholder="Category" />
             </Form.Item>
 
             <Form.Item<FieldType>
+              arial-label="Code"
               name="code"
-              rules={[{ validator: validateWhitespace }]}
+              rules={[{ validator: validateCode }]}
             >
               <Input placeholder="Prefix" />
             </Form.Item>
@@ -135,6 +147,7 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
               <Button
                 type="default"
                 htmlType="submit"
+                name="save"
                 className="bg-[#E20D1]"
                 disabled={isButtonDisabled}
                 loading={isLoading}
@@ -152,10 +165,11 @@ const ClickableText: React.FC<ClickableTextProps> = ({ items, setItems }) => {
       </div>
     </>
   ) : (
-    <span onClick={handleTextClick}>Add new category</span>
+    <span onClick={handleTextClick} style={{ color: "red" }}>
+      Add new category
+    </span>
   );
 
   return <div>{content}</div>;
-};
-
-export default ClickableText;
+}
+export default AddCategoryButton;

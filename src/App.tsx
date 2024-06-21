@@ -49,15 +49,6 @@ function App() {
           }
         />
 
-        {/* <Route
-          path="/addasset"
-          element={
-            <PublicRoute>
-              <AddAsset />
-            </PublicRoute>
-          }
-        /> */}
-
         <Route
           path="/admin/assets/create-asset"
           element={
