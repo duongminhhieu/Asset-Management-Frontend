@@ -23,6 +23,7 @@ const CreateUser: React.FC = () => {
   const [isStaticFieldVisible, setIsStaticFieldVisible] = useState(false);
   const [userType, setUserType] = useState<string>("USER");
   const [, setUsername] = useState<string>("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const navigate = useNavigate();
 
   const onFinish = (values: FormValues) => {
@@ -69,17 +70,17 @@ const CreateUser: React.FC = () => {
   const validateWhitespace = (_: unknown, value: string) => {
     if (!value) {
       return Promise.reject(new Error("Cannot be empty"));
+    } else if (value.trim().length > 128) {
+      return Promise.reject(
+        new Error("Length must be less than 128 characters")
+      );
     }
 
-    else if (value.trim().length > 128) {
-      return Promise.reject(new Error("Length must be less than 128 characters"));
-    }
-    
     // Check if the value contains only letters, digits, or underscores
     else if (/^[a-zA-Z0-9 ]+$/.test(value)) {
       return Promise.resolve();
     }
-  
+
     return Promise.reject(new Error("Must not contains special chars"));
   };
 
@@ -126,16 +127,18 @@ const CreateUser: React.FC = () => {
 
   // Handlers
   const handleFieldsChange = () => {
-    const firstName = form.getFieldValue("firstName");
-    const lastName = form.getFieldValue("lastName");
+    const firstName = form.getFieldValue("firstName") || "";
+    const lastName = form.getFieldValue("lastName") || "";
 
-    if (firstName && lastName) {
-      setUsername(`${firstName} ${lastName}`);
-      setIsStaticFieldVisible(true);
-    } else {
-      setUsername(""); // Clear username if either first name or last name is empty
-      setIsStaticFieldVisible(false);
-    }
+    const isFirstNameValid = firstName.trim() !== "";
+    const isLastNameValid = lastName.trim() !== "";
+
+    setIsButtonDisabled(!(isFirstNameValid && isLastNameValid));
+
+    setUsername(
+      isFirstNameValid && isLastNameValid ? `${firstName} ${lastName}` : ""
+    );
+    setIsStaticFieldVisible(isFirstNameValid && isLastNameValid);
   };
 
   const handleBackUserPage = () => {
@@ -265,7 +268,12 @@ const CreateUser: React.FC = () => {
         style={{ display: "flex", justifyContent: "flex-end", gap: "20px" }}
       >
         <Form.Item>
-          <Button type="primary" danger htmlType="submit">
+          <Button
+            type="primary"
+            disabled={isButtonDisabled}
+            danger
+            htmlType="submit"
+          >
             Save
           </Button>
         </Form.Item>

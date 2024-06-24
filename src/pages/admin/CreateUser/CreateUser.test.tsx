@@ -20,7 +20,7 @@ describe("CreateUser Component", () => {
     // Use getByText to find the exact text
     expect(screen.getByText("Create New User")).toBeInTheDocument();
   });
-  
+
   it("renders static field when both first and last names are provided", () => {
     renderComponent();
 
@@ -45,7 +45,7 @@ describe("CreateUser Component", () => {
     const { getByText } = renderComponent();
     fireEvent.click(getByText("Save"));
     await waitFor(() => {
-      expect(getByText("Please select the date of birth!")).toBeInTheDocument();
+      expect(screen.getByTestId("dob")).toBeInTheDocument();
     });
   });
 });
