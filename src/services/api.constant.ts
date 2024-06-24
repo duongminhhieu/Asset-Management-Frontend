@@ -25,4 +25,8 @@ export class APIConstants {
     CREATE_ASSET: "/assets",
     GET_ASSETS: "/assets",
   };
+
+  static ASSIGNMENT = {
+    HISTORY: (assetId: number) => `/assignments/${assetId}/history`
+  }
 }

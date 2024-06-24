@@ -24,6 +24,22 @@ describe("Test User Details Modal", () =>{
                     name: "Ho Chi Minh"
                 }
             }} show={true}/>
+            <UserDetailsModal data={{
+                id: 0,
+                staffCode: "SD1234",
+                firstName: "An",
+                lastName: "Tran Van",
+                username: "antv1",
+                joinDate: new Date("10/10/2010"),
+                dob: new Date("2/9/1990"),
+                gender: "MALE",
+                status: "ACTIVE",
+                type: "ADMIN",
+                location: {
+                    id: 1,
+                    name: "Ho Chi Minh"
+                }
+            }}/>
       </BrowserRouter>
     );
   });

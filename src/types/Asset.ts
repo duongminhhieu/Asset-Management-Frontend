@@ -10,4 +10,17 @@ export type Asset = {
   EAssetSate: string;
   category: Category;
   location: Location;
+  state:string;
+};
+
+export type AssetResponse = {
+  id: number;
+  name: string;
+  specification: string;
+  assetCode: string;
+  installDate: Date;
+  EAssetSate: string;
+  category: string;
+  location: Location;
+  state:string;
 };

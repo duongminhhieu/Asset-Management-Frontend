@@ -1,0 +1,15 @@
+.ant-modal-content{
+    max-width: 1500px !important;
+    width: 800px !important; 
+    margin: 0;
+    font-size: large !important;
+}
+
+.ant-modal-body{
+    max-width: 700px !important;
+    width: auto !important;
+}
+
+.ant-form{
+    width: auto !important;
+}

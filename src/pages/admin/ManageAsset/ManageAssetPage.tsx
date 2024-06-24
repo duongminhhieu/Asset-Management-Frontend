@@ -10,16 +10,21 @@ import { useEffect, useState } from "react";
 import type { TableProps } from "antd/es/table";
 import APIResponse from "@/types/APIResponse";
 import { SorterResult } from "antd/es/table/interface";
-import { Asset } from "@/types/Asset";
+import { AssetResponse } from "@/types/Asset";
 import AssetSearchParams from "@/types/AssetSearchParams";
 import { AssetAPICaller } from "@/services/apis/asset.api";
 import { Category } from "@/types/Category";
 import { CategoryAPICaller } from "@/services/apis/category.api";
+import AssetDetailsModal from "./components/AssetDetailsModal";
 
 function ManageAssetPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [items, setItems] = useState<Asset[]>([]);
+  const [items, setItems] = useState<AssetResponse[]>([]);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [assetData, setAssetData] = useState<AssetResponse>();
 
   const location = useLocation();
 
@@ -73,8 +78,6 @@ function ManageAssetPage() {
     }
 
     if (isSuccessCategory) {
-      console.log("data 2:", categoryData?.data?.result);
-
       //   setCategory(categoryData.data.result.data);
     }
   }, [isErrorCategory, isSuccessCategory, categoryData, errorCategory]);
@@ -83,20 +86,15 @@ function ManageAssetPage() {
     if (isError) {
       const errorResponse = (error as { response: { data: APIResponse } })
         .response.data;
-      // console.log("error:", errorResponse);
       message.error(errorResponse.message);
     }
 
     if (isSuccess) {
-      console.log("data 1:", queryData.data.result);
 
       let temp = [...queryData.data.result.data];
 
-      console.log("newAsset:", asset);
-
       if (asset) {
-        temp = temp.filter((item: Asset) => asset.id !== item.id);
-        console.log("first");
+        temp = temp.filter((item: AssetResponse) => asset.id !== item.id);
         temp.pop();
         temp = [asset, ...temp];
         const msg = { content: "some error msg", duration: 5, key: "abc" };
@@ -108,8 +106,9 @@ function ManageAssetPage() {
       return () => message.destroy("abc");
     }
   }, [isSuccess]);
+  
 
-  const columns: TableColumnsType<Asset> = [
+  const columns: TableColumnsType<AssetResponse> = [
     {
       title: "Asset Code",
       dataIndex: "assetCode",
@@ -144,13 +143,15 @@ function ManageAssetPage() {
       render: () => (
         <div className="flex space-x-5">
           <EditOutlined
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               console.log("edit");
             }}
           />
           <CloseCircleOutlined
             style={{ color: "red" }}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               console.log("Delete");
             }}
           />
@@ -160,12 +161,12 @@ function ManageAssetPage() {
     },
   ];
 
-  const handleTableChange: TableProps<Asset>["onChange"] = (
+  const handleTableChange: TableProps<AssetResponse>["onChange"] = (
     _pagination,
     _filteers,
     sorter
   ) => {
-    sorter = sorter as SorterResult<Asset>;
+    sorter = sorter as SorterResult<AssetResponse>;
     const { field, order } = sorter;
 
     console.log("sorter: ", field, order, sorter);
@@ -194,6 +195,22 @@ function ManageAssetPage() {
 
         return searchParams;
       });
+  };
+
+  const baseAsset = {
+    id: 0,
+    name: "",
+    specification: "",
+    category: "",
+    assetCode: "",
+    installDate: new Date(),
+    state: "",
+    location: {
+      id: 1,
+      name: "Ho Chi Minh",
+      code: "HCM",
+    },
+    EAssetSate:""
   };
 
   return (
@@ -245,11 +262,21 @@ function ManageAssetPage() {
           onChange={handleTableChange}
           loading={isLoading && isLoadingCategory}
           dataSource={items}
+          onRow={(_, index) => {
+            return {
+              onClick: (e) => {
+                e.stopPropagation();
+                setAssetData(items[index || 0]);
+                setShowModal(true);
+              },
+            };
+          }}
         ></Table>
         <div className="pt-8 flex justify-end">
           <CustomPagination totalItems={20}></CustomPagination>
         </div>
       </div>
+      <AssetDetailsModal assetData={assetData ||baseAsset} show={showModal} handleClose={()=>{setShowModal(false)}}/>
     </div>
   );
 }
