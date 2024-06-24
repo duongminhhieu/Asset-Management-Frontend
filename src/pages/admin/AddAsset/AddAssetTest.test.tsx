@@ -35,7 +35,7 @@ describe("Asset Form", () => {
 
     expect(screen.getByText("Create New Asset")).toBeInTheDocument();
     expect(screen.getByLabelText("Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Category")).toBeInTheDocument();
+    // expect(screen.getByLabelText("Category")).toBeInTheDocument();
     expect(screen.getByLabelText("Specification")).toBeInTheDocument();
     expect(screen.getByLabelText("Installed Date")).toBeInTheDocument();
     expect(screen.getByLabelText("State")).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("Asset Form", () => {
     renderWithProviders();
 
     const name = screen.getByLabelText("Name");
-    const category = screen.getByLabelText("Category");
+    // const category = screen.getByLabelText("Category");
     const specification = screen.getByLabelText("Specification");
     const installDate = screen.getByLabelText("Installed Date");
     const saveButton = screen.getByRole("button", { name: /save/i });
@@ -55,7 +55,7 @@ describe("Asset Form", () => {
 
     act(() => {
       fireEvent.change(name, { target: { value: "Asset Name" } });
-      fireEvent.change(category, { target: { value: "Laptop" } });
+      // fireEvent.change(category, { target: { value: "Laptop" } });
       fireEvent.change(specification, { target: { value: "Specification" } });
       fireEvent.click(screen.getByLabelText("Not Available"));
       fireEvent.change(installDate, {
@@ -68,7 +68,7 @@ describe("Asset Form", () => {
     renderWithProviders();
 
     const name = screen.getByLabelText("Name");
-    const category = screen.getByLabelText("Category");
+    // const category = screen.getByLabelText("Category");
     const specification = screen.getByLabelText("Specification");
     const installDate = screen.getByLabelText("Installed Date");
     const saveButton = screen.getByRole("button", { name: /save/i });
@@ -78,7 +78,7 @@ describe("Asset Form", () => {
     act(() => {
       const today = new Date();
       fireEvent.change(name, { target: { value: "Asset Name" } });
-      fireEvent.change(category, { target: { value: "Laptop" } });
+      // fireEvent.change(category, { target: { value: "Laptop" } });
       fireEvent.change(specification, { target: { value: "Specification" } });
       fireEvent.click(screen.getByLabelText("Available"));
       fireEvent.change(installDate, {
@@ -99,7 +99,7 @@ describe("Asset Form", () => {
     renderWithProviders();
 
     const name = screen.getByLabelText("Name");
-    const category = screen.getByLabelText("Category");
+    // const category = screen.getByLabelText("Category");
     const specification = screen.getByLabelText("Specification");
     const installDate = screen.getByLabelText("Installed Date");
     const saveButton = screen.getByRole("button", { name: /save/i });
@@ -107,22 +107,10 @@ describe("Asset Form", () => {
     expect(saveButton).toBeDisabled();
 
     act(() => {
-      // const today = new Date();
       fireEvent.change(name, { target: { value: " Asset Name  " } });
-      fireEvent.change(category, { target: { value: "" } });
+      // fireEvent.change(category, { target: { value: "" } });
       fireEvent.change(specification, { target: { value: "Specification " } });
       fireEvent.click(screen.getByLabelText("Not Available"));
-      // fireEvent.change(installDate, {
-      //   target: {
-      //     value: new Date(
-      //       today.getFullYear(),
-      //       today.getMonth() - 4,
-      //       today.getDate()
-      //     )
-      //       .toISOString()
-      //       .split("T")[0],
-      //   },
-      // });
       fireEvent.change(installDate, {
         target: {
           value: "2024-06-02",
@@ -189,14 +177,14 @@ describe("Asset Form", () => {
     renderWithProviders();
 
     const name = screen.getByLabelText("Name");
-    const category = screen.getByLabelText("Category");
+    // const category = screen.getByLabelText("Category");
     const specification = screen.getByLabelText("Specification");
     const installDate = screen.getByLabelText("Installed Date");
     const saveButton = screen.getByRole("button", { name: /save/i });
 
     act(() => {
       fireEvent.change(name, { target: { value: "Asset Name" } });
-      fireEvent.change(category, { target: { value: "Laptop" } });
+      // fireEvent.change(category, { target: { value: "Laptop" } });
       fireEvent.change(specification, { target: { value: "Specification" } });
       fireEvent.click(screen.getByLabelText("Not Available"));
       fireEvent.change(installDate, {

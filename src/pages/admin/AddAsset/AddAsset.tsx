@@ -53,9 +53,6 @@ function AddAsset() {
   }, [isError, isSuccess]);
 
   const onFinish = (values: FormValues) => {
-    if (values.category && typeof values.category === "object") {
-      values.category = values.category["name"];
-    }
     mutate(values);
   };
 
@@ -154,31 +151,23 @@ function AddAsset() {
         name="installDate"
         hasFeedback
         rules={[
-          () => ({
-            validator(_: unknown, value: Date) {
-              if (!value) {
-                return Promise.reject(
-                  new Error("Please select the installed date!")
-                );
-              }
-
-              const today = new Date();
-              const threeMonthsAgo = new Date();
-              threeMonthsAgo.setMonth(today.getMonth() - 3);
-
-              if (value > threeMonthsAgo) {
-                return Promise.resolve();
-              }
-
-              return Promise.reject(
-                new Error("Installed date must be less than 3 months ago!")
-              );
-            },
-          }),
+          { required: true, message: "Please select the installed date!" },
         ]}
         labelAlign="left"
       >
-        <DatePicker style={{ width: "100%" }} />
+        <DatePicker
+          type="date"
+          data-testid="install-date"
+          style={{ width: "100%" }}
+          disabledDate={(current) => {
+            const today = new Date();
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(today.getMonth() - 3);
+            threeMonthsAgo.setDate(today.getDate());
+            const currentDate = current.toDate();
+            return current && currentDate <= threeMonthsAgo;
+          }}
+        />
       </Form.Item>
 
       {/* State */}

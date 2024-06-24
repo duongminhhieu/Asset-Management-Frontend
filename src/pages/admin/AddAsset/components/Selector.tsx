@@ -45,10 +45,10 @@ function Selector({ value, onChange }: SelectorProps) {
       <Select
         value={value}
         onChange={onChange}
-        placeholder=""
+        // placeholder=""
         listItemHeight={999}
         listHeight={9999}
-        id="category"
+        // id="category"
         aria-label="category"
         dropdownRender={(menu) => (
           <>
