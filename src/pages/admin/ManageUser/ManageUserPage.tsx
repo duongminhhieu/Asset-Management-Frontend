@@ -180,7 +180,7 @@ function ManageUserPage() {
         <div>
           <Filter
             title={"Type"}
-            options={["ADMIN", "STAFF"]}
+            options={[{label:"Admin", value:"ADMIN"}, {label:"Staff", value:"STAFF"}]}
             paramName={"type"}
           />
         </div>

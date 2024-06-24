@@ -8,7 +8,7 @@ describe("Test custom pagination", () =>{
   beforeEach(() => {
     component = render(
       <BrowserRouter>
-        <Filter title={"Title"} options={["option"]} paramName={"type"}/>
+        <Filter title={"Title"} options={[{label:"Admin", value:"Admin"}, {label:"Staff", value:"Staff"}]} paramName={"type"}/>
       </BrowserRouter>
     );
   });

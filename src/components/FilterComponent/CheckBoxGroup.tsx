@@ -4,7 +4,7 @@ import type { CheckboxProps } from "antd";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  options: string[];
+  options: {value: string, label:string}[];
   paramName:string;
 }
 
@@ -35,13 +35,13 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
   const onCheckAllChange: CheckboxProps["onChange"] = (e) => {
       setSearchParams((searchParams) => {
         if (e.target.checked){
-            searchParams.set(paramName, options.join(","));
+            searchParams.set(paramName, options.map(option=>option.value).join(","));
           }else{
             searchParams.delete(paramName)
           }
         return searchParams;
       });
-      setCheckedList(e.target.checked ? options : []);
+      setCheckedList(e.target.checked ? options.map(option=>option.value) : []);
   };
 
   return (
@@ -57,7 +57,7 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
         <Checkbox.Group value={checkedList} onChange={onChange}>
           <Space direction="vertical">
             {options.map((option,index) => (
-              <Checkbox value={option} key={index} id={option}>{option}</Checkbox>
+              <Checkbox value={option.value} key={index} id={option.value}>{option.label}</Checkbox>
             ))}
           </Space>
         </Checkbox.Group>

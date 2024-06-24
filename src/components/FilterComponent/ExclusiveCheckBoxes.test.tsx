@@ -3,7 +3,7 @@ import ExclusiveCheckBoxes from './ExclusiveCheckBoxes'; // Adjust the import pa
 import { MemoryRouter } from 'react-router-dom';
 
 describe('ExclusiveCheckBoxes component', () => {
-  const options = ['Admin', 'Staff'];
+  const options = [{label:"Admin", value:"Admin"}, {label:"Staff", value:"Staff"}];
   const paramName = 'type';
 
   let component: RenderResult;
@@ -18,13 +18,13 @@ describe('ExclusiveCheckBoxes component', () => {
 
   test('renders checkboxes with correct options', () => {
     options.forEach(option => {
-      const checkbox = component.getByLabelText(option);
+      const checkbox = component.getByLabelText(option.label);
       expect(checkbox).toBeInTheDocument();
     });
   });
 
   test('changes search parameters when checkboxes are clicked', () => {
-    const optionCheckbox = component.getByLabelText(options[1]);
+    const optionCheckbox = component.getByLabelText(options[1].label);
     fireEvent.click(optionCheckbox);
 
     expect(optionCheckbox).toBeChecked()

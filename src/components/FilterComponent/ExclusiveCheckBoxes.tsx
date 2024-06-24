@@ -4,7 +4,7 @@ import type { CheckboxProps } from "antd";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  options: string[];
+  options: {value: string, label:string}[];
   paramName: string;
 }
 
@@ -46,12 +46,12 @@ const ExvlusiveCheckBoxes: React.FC<Props> = ({
         </Checkbox>
         {options.map((option, index) => (
           <Checkbox
-            value={option}
+            value={option.value}
             key={index}
             onChange={onChange}
-            checked={option === checked}
+            checked={option.value === checked}
           >
-            {option}{" "}
+            {option.label}{" "}
           </Checkbox>
         ))}
       </Space>
