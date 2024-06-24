@@ -7,6 +7,7 @@ import AdminRoute from "./layouts/admin";
 import HomePageAdmin from "./pages/admin/Home";
 import AddAsset from "./pages/admin/AddAsset/AddAsset";
 import ManageUser from "./pages/admin/ManageUser/ManageUserPage";
+import ManageAssetPage from "./pages/admin/ManageAsset/ManageAssetPage";
 import CreateUser from "./pages/admin/CreateUser/CreateUser";
 
 function App() {
@@ -45,7 +46,7 @@ function App() {
           path="/admin/assets"
           element={
             <AdminRoute>
-              <div>ManageAsset</div>
+              <ManageAssetPage />
             </AdminRoute>
           }
         />

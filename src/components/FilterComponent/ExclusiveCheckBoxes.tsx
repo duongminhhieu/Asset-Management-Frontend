@@ -4,7 +4,7 @@ import type { CheckboxProps } from "antd";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  options: {value: string, label:string}[];
+  options: { value: string; label: string }[];
   paramName: string;
 }
 
@@ -35,7 +35,10 @@ const ExvlusiveCheckBoxes: React.FC<Props> = ({
 
   return (
     <>
-      <Space direction="vertical">
+      <Space
+        direction="vertical"
+        style={{ maxHeight: "200px", overflow: "auto" }}
+      >
         <Checkbox
           value={"All"}
           key={"all"}

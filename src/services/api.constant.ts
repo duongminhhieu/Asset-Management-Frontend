@@ -23,5 +23,6 @@ export class APIConstants {
   };
   static ASSET = {
     CREATE_ASSET: "/assets",
+    GET_ASSETS: "/assets",
   };
 }

@@ -4,8 +4,8 @@ import type { CheckboxProps } from "antd";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  options: {value: string, label:string}[];
-  paramName:string;
+  options: { value: string; label: string }[];
+  paramName: string;
 }
 
 const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
@@ -13,7 +13,6 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
   const [checkedList, setCheckedList] = useState<string[]>(
     searchParams.get(paramName)?.split(",") || []
   );
-
 
   const checkAll = options.length === checkedList.length;
 
@@ -23,31 +22,41 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
   const onChange = (list: string[]) => {
     setCheckedList(list);
     setSearchParams((searchParams) => {
-      if(list.length === 0 ){
+      if (list.length === 0) {
         searchParams.delete(paramName);
-      }else{searchParams.set(paramName, list.join(","));
+      } else {
+        searchParams.set(paramName, list.join(","));
       }
-        
+
       return searchParams;
     });
   };
 
   const onCheckAllChange: CheckboxProps["onChange"] = (e) => {
-      setSearchParams((searchParams) => {
-        if (e.target.checked){
-            searchParams.set(paramName, options.map(option=>option.value).join(","));
-          }else{
-            searchParams.delete(paramName)
-          }
-        return searchParams;
-      });
-      setCheckedList(e.target.checked ? options.map(option=>option.value) : []);
+    setSearchParams((searchParams) => {
+      if (e.target.checked) {
+        searchParams.set(
+          paramName,
+          options.map((option) => option.value).join(",")
+        );
+      } else {
+        searchParams.delete(paramName);
+      }
+      return searchParams;
+    });
+    setCheckedList(
+      e.target.checked ? options.map((option) => option.value) : []
+    );
   };
 
   return (
     <>
-      <Space direction="vertical">
-        <Checkbox id="all"
+      <Space
+        direction="vertical"
+        style={{ maxHeight: "200px", overflow: "auto" }}
+      >
+        <Checkbox
+          id="all"
           indeterminate={indeterminate}
           onChange={onCheckAllChange}
           checked={checkAll}
@@ -56,8 +65,10 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
         </Checkbox>
         <Checkbox.Group value={checkedList} onChange={onChange}>
           <Space direction="vertical">
-            {options.map((option,index) => (
-              <Checkbox value={option.value} key={index} id={option.value}>{option.label}</Checkbox>
+            {options.map((option, index) => (
+              <Checkbox value={option.value} key={index} id={option.value}>
+                {option.label}
+              </Checkbox>
             ))}
           </Space>
         </Checkbox.Group>

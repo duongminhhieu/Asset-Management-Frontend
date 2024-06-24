@@ -4,7 +4,7 @@ import CheckBoxGroup from "./CheckBoxGroup";
 import ExclusiveCheckBoxes from "./ExclusiveCheckBoxes";
 interface Props {
   title: string;
-  options: {value: string, label:string}[];
+  options: { value: string; label: string }[];
   paramName: string;
   allowedMultiple?: boolean;
 }

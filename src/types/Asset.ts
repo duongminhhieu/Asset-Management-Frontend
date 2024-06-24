@@ -1,16 +1,13 @@
-export type Asset = {
-    id: number,
-    name: string;
-    specification: string;
-    assetCode: string;
-    installDate: Date;
-    state: string;
-    location: Location;
-    category: string;
-}
+import { Location } from "./Location";
+import { Category } from "./Category";
 
-export type Location = {
-    id: number;
-    name: string;
-    code: string;
-}
+export type Asset = {
+  id: number;
+  name: string;
+  specification: string;
+  assetCode: string;
+  installDate: Date;
+  EAssetSate: string;
+  category: Category;
+  location: Location;
+};
