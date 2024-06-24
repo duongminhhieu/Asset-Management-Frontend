@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { APIConstants } from "../api.constant";
 import instance from "../instance.axios";
 import UserSearchParams from "@/types/UserSearchParams";
+import { UserRequest } from "@/types/UserRequest";
 
 export class UserAPICaller {
   static firstChangePassword = (body = {}, token: string) => {
@@ -15,6 +16,26 @@ export class UserAPICaller {
     };
     return axios.patch(APIConstants.USER.FIRST_CHANGE_PASSWORD, body, config);
   };
+
+  static getUsernameGenerated = (firstName: string, lastName: string) => {
+    return instance.get(APIConstants.USER.GENERATE_USERNAME, {
+      params: { firstName, lastName },
+    });
+  };
+
+  static createUser = (userData: UserRequest) =>
+      instance.post(APIConstants.USER.CREATE_USER, userData);
+
+  // static createUser = (userData: UserRequest, token: string) => {
+  //   const config: AxiosRequestConfig = {
+  //     baseURL: process.env.VITE_BACKEND_URL,
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       "Content-type": "application/json",
+  //     },
+  //   };
+  //   return axios.post(APIConstants.USER.CREATE_USER, userData, config);
+  // };
 
   static getSearchUser = (userSearchParams: UserSearchParams) => {
     console.log(userSearchParams);

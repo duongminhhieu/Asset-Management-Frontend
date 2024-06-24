@@ -14,10 +14,13 @@ import type { TableProps } from "antd/es/table";
 import APIResponse from "@/types/APIResponse";
 import { SorterResult } from "antd/es/table/interface";
 import UserDetailsModal from "./components/UserDetailsModal";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function ManageUserPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { newUser } = location.state || {};
   const [showModal, setShowModal] = useState<boolean>(false);
   const [userData, setUserData] = useState<User>();
   const [items, setItems] = useState<User[]>([]);
@@ -57,11 +60,23 @@ function ManageUserPage() {
     }
 
     if (isSuccess) {
-      setItems(queryData.data.result.data);
+      let updatedItems = queryData.data.result.data;
+      console.log(newUser);
+      if (newUser) {
+        updatedItems = updatedItems.filter(
+          (item: User) => item.id !== newUser.id
+        );
+        updatedItems = [newUser, ...updatedItems];
+        if (updatedItems.length === 18) {
+          updatedItems.pop();
+        }
+      }
+      window.history.replaceState({}, '')
+      setItems(updatedItems);
     }
   }, [error, isError, isSuccess, queryData]);
 
-  const baseUser:User = {
+  const baseUser: User = {
     id: 0,
     staffCode: "",
     firstName: "",
@@ -74,8 +89,9 @@ function ManageUserPage() {
     type: "",
     location: {
       id: 0,
-      name: ""
-    }} 
+      name: "",
+    },
+  };
 
   const columns: TableColumnsType<User> = [
     {
@@ -173,6 +189,10 @@ function ManageUserPage() {
       });
   };
 
+  const handleCreateUser = () => {
+    navigate("/admin/users/createUser");
+  };
+
   return (
     <div className="">
       <h1 className="text-3xl font-bold text-red-500">User List</h1>
@@ -180,13 +200,21 @@ function ManageUserPage() {
         <div>
           <Filter
             title={"Type"}
-            options={[{label:"Admin", value:"ADMIN"}, {label:"Staff", value:"STAFF"}]}
+            options={[
+              { label: "Admin", value: "ADMIN" },
+              { label: "Staff", value: "STAFF" },
+            ]}
             paramName={"type"}
           />
         </div>
         <div className=" flex flex-1 justify-end space-x-5">
           <SearchFieldComponent onSearch={onSearch} />
-          <Button danger type="primary" color="#CF2338" htmlType="submit">
+          <Button
+            danger
+            type="primary"
+            color="#CF2338"
+            onClick={handleCreateUser}
+          >
             Create new user
           </Button>
         </div>
@@ -199,15 +227,14 @@ function ManageUserPage() {
           dataSource={items}
           rowKey={(record) => record.id}
           onChange={handleTableChange}
-          onRow={(_,index)=>{
+          onRow={(_, index) => {
             return {
-              onClick: (e)=>{
-                e.stopPropagation()
+              onClick: (e) => {
+                e.stopPropagation();
                 setUserData(items[index || 0]);
                 setShowModal(true);
-
-              }
-            }
+              },
+            };
           }}
         ></Table>
         <div className="pt-8 flex justify-end">
@@ -216,8 +243,13 @@ function ManageUserPage() {
           ></CustomPagination>
         </div>
       </div>
-      <UserDetailsModal  show={showModal} data={ userData ||
-      baseUser} handleClose={() => {setShowModal(false);}}/>
+      <UserDetailsModal
+        show={showModal}
+        data={userData || baseUser}
+        handleClose={() => {
+          setShowModal(false);
+        }}
+      />
     </div>
   );
 }
