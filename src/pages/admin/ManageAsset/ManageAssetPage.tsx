@@ -105,7 +105,7 @@ function ManageAssetPage() {
       setItems(temp);
       return () => message.destroy("abc");
     }
-  }, [isSuccess]);
+  }, [error, isError, isSuccess, queryData]);
   
 
   const columns: TableColumnsType<AssetResponse> = [
@@ -198,7 +198,7 @@ function ManageAssetPage() {
   };
 
   const baseAsset = {
-    id: 0,
+    id: 1,
     name: "",
     specification: "",
     category: "",
@@ -273,7 +273,7 @@ function ManageAssetPage() {
           }}
         ></Table>
         <div className="pt-8 flex justify-end">
-          <CustomPagination totalItems={20}></CustomPagination>
+          <CustomPagination totalItems={queryData?.data.result.total}></CustomPagination>
         </div>
       </div>
       <AssetDetailsModal assetData={assetData ||baseAsset} show={showModal} handleClose={()=>{setShowModal(false)}}/>
