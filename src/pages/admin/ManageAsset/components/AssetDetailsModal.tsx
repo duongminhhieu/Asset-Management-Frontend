@@ -31,9 +31,11 @@ function AssetDetailsModal({ assetData, show, handleClose }: Props) {
     isError,
     isLoading,
     error,
-  } = useQuery(["getAssetHistory", { assetData }], () =>
-    AssignmentAPICaller.getHistory(assetData.id), {
-      enabled:show,
+  } = useQuery(
+    ["getAssetHistory", { assetData }],
+    () => AssignmentAPICaller.getHistory(assetData.id),
+    {
+      enabled: show,
     }
   );
 

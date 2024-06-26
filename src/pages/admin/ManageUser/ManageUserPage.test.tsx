@@ -40,7 +40,10 @@ describe("ManageUserPage", () => {
       })
     );
 
-    await waitFor(() => expect(screen.getByRole("table")).toBeInTheDocument());
+    await waitFor(() => {
+      // Assuming the search button updates the URL, check if the URL contains the search parameter
+      expect(window.location.search).toContain("search=test");
+    });
   });
 
   test("sorts users", async () => {

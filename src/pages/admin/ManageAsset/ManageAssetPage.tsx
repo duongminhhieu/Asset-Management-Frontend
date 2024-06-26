@@ -149,7 +149,6 @@ function ManageAssetPage() {
             style={{ color: "red" }}
             onClick={(e) => {
               e.stopPropagation();
-              console.log("Delete");
             }}
           />
         </div>
