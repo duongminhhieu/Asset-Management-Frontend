@@ -26,11 +26,7 @@ function ManageUserPage() {
   const [items, setItems] = useState<User[]>([]);
 
   const onSearch = (value: string) => {
-    setSearchParams((searchParams) => {
-      searchParams.set("search", value);
-
-      return searchParams;
-    });
+    setSearchParams({ search: value });
   };
 
   const params: UserSearchParams = {
@@ -71,7 +67,7 @@ function ManageUserPage() {
           updatedItems.pop();
         }
       }
-      window.history.replaceState({}, '')
+      window.history.replaceState({}, "");
       setItems(updatedItems);
     }
   }, [error, isError, isSuccess, queryData]);

@@ -33,11 +33,7 @@ function ManageAssetPage() {
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
-    setSearchParams((searchParams) => {
-      searchParams.set("search", value);
-
-      return searchParams;
-    });
+    setSearchParams({ search: value });
   };
 
   const params: AssetSearchParams = {
@@ -90,23 +86,24 @@ function ManageAssetPage() {
     }
 
     if (isSuccess) {
-
       let temp = [...queryData.data.result.data];
 
       if (asset) {
         temp = temp.filter((item: AssetResponse) => asset.id !== item.id);
         temp.pop();
         temp = [asset, ...temp];
-        const msg = { content: "some error msg", duration: 5, key: "abc" };
+        const msg = {
+          content: "Create asset successfully",
+          duration: 5,
+          key: "abc",
+        };
         message.success(msg);
-        navigate(location.pathname, { state: {}, replace: true });
       }
-
+      window.history.replaceState({}, "");
       setItems(temp);
-      return () => message.destroy("abc");
     }
+    return () => message.destroy("abc");
   }, [error, isError, isSuccess, queryData]);
-  
 
   const columns: TableColumnsType<AssetResponse> = [
     {
@@ -210,7 +207,7 @@ function ManageAssetPage() {
       name: "Ho Chi Minh",
       code: "HCM",
     },
-    EAssetSate:""
+    EAssetSate: "",
   };
 
   return (
@@ -273,10 +270,18 @@ function ManageAssetPage() {
           }}
         ></Table>
         <div className="pt-8 flex justify-end">
-          <CustomPagination totalItems={queryData?.data.result.total}></CustomPagination>
+          <CustomPagination
+            totalItems={queryData?.data.result.total}
+          ></CustomPagination>
         </div>
       </div>
-      <AssetDetailsModal assetData={assetData ||baseAsset} show={showModal} handleClose={()=>{setShowModal(false)}}/>
+      <AssetDetailsModal
+        assetData={assetData || baseAsset}
+        show={showModal}
+        handleClose={() => {
+          setShowModal(false);
+        }}
+      />
     </div>
   );
 }
