@@ -127,13 +127,30 @@ const CreateUser: React.FC = () => {
 
   // Handlers
   const handleFieldsChange = () => {
+    const fieldsValues = form.getFieldsValue();
     const firstName = form.getFieldValue("firstName") || "";
     const lastName = form.getFieldValue("lastName") || "";
 
     const isFirstNameValid = firstName.trim() !== "";
     const isLastNameValid = lastName.trim() !== "";
+    const isDobValid = fieldsValues.dob != null;
+    const isGenderValid = fieldsValues.gender != null;
+    const isJoinDateValid = fieldsValues.joinDate != null;
+    const isRoleValid = fieldsValues.role != null && fieldsValues.role !== "";
 
-    setIsButtonDisabled(!(isFirstNameValid && isLastNameValid));
+
+    setIsButtonDisabled(
+      !(
+        (
+          isFirstNameValid &&
+          isLastNameValid &&
+          isDobValid &&
+          isGenderValid &&
+          isJoinDateValid &&
+          isRoleValid 
+        ) 
+      )
+    );
 
     setUsername(
       isFirstNameValid && isLastNameValid ? `${firstName} ${lastName}` : ""
