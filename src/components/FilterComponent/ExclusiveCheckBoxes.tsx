@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox, Space } from "antd";
 import type { CheckboxProps } from "antd";
 import { useSearchParams } from "react-router-dom";
@@ -16,6 +16,10 @@ const ExvlusiveCheckBoxes: React.FC<Props> = ({
   const [checked, setChecked] = useState<string>(
     searchParams.get(paramName) || "All"
   );
+
+  useEffect(()=>{
+    setChecked(searchParams.get(paramName) || "All")
+  },[paramName, searchParams])
 
   const onChange: CheckboxProps["onChange"] = (e) => {
     setChecked(e.target.value);
@@ -49,10 +53,10 @@ const ExvlusiveCheckBoxes: React.FC<Props> = ({
         </Checkbox>
         {options.map((option, index) => (
           <Checkbox
-            value={option.value}
+            value={option.value.toString()}
             key={index}
             onChange={onChange}
-            checked={option.value === checked}
+            checked={option.value.toString() === checked}
           >
             {option.label}{" "}
           </Checkbox>

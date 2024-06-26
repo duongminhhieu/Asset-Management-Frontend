@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox, Space } from "antd";
 import type { CheckboxProps } from "antd";
 import { useSearchParams } from "react-router-dom";
@@ -13,6 +13,10 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
   const [checkedList, setCheckedList] = useState<string[]>(
     searchParams.get(paramName)?.split(",") || []
   );
+
+  useEffect(()=>{
+    setCheckedList(searchParams.get(paramName)?.split(",") || [])
+  },[paramName, searchParams])
 
   const checkAll = options.length === checkedList.length;
 
@@ -37,7 +41,7 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
       if (e.target.checked) {
         searchParams.set(
           paramName,
-          options.map((option) => option.value).join(",")
+          options.map((option) => option.value.toString()).join(",")
         );
       } else {
         searchParams.delete(paramName);
@@ -45,7 +49,7 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
       return searchParams;
     });
     setCheckedList(
-      e.target.checked ? options.map((option) => option.value) : []
+      e.target.checked ? options.map((option) => option.value.toString()) : []
     );
   };
 
@@ -66,7 +70,7 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
         <Checkbox.Group value={checkedList} onChange={onChange}>
           <Space direction="vertical">
             {options.map((option, index) => (
-              <Checkbox value={option.value} key={index} id={option.value}>
+              <Checkbox value={option.value.toString()} key={index} id={option.value.toString()}>
                 {option.label}
               </Checkbox>
             ))}
