@@ -62,9 +62,8 @@ function AssetDetailsModal({ assetData, show, handleClose }: Props) {
       open={show}
       footer={null}
       onCancel={handleClose}
-      width={600}
+      width={900}
     >
-      <Flex>
         <Form layout="horizontal">
           <Form.Item
             label="Asset Code"
@@ -131,7 +130,6 @@ function AssetDetailsModal({ assetData, show, handleClose }: Props) {
             <AssignmentHistory data={items} isLoading={isLoading} />
           </Form.Item>
         </Form>
-      </Flex>
     </Modal>
   );
 }
