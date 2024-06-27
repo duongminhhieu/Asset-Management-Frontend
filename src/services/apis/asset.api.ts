@@ -11,4 +11,10 @@ export class AssetAPICaller {
       params: assetSearchParams,
     });
   };
+
+  static deleteAsset = (id: number) =>
+    instance.delete(APIConstants.ASSET.DELETE_ASSET(id));
+
+  static getAssetHistory = (id: number) =>
+    instance.get(APIConstants.ASSET.GET_ASSET_HISTORY(id));
 }

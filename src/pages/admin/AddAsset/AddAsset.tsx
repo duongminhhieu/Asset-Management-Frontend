@@ -142,7 +142,7 @@ function AddAsset() {
           { validator: validateWhitespace },
         ]}
       >
-        <Input.TextArea style={{ height: "100px" }} />
+        <Input.TextArea style={{ height: "100px", overflow: "auto" }} />
       </Form.Item>
 
       {/* Install Date */}

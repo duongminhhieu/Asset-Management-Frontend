@@ -1,11 +1,16 @@
 import SearchFieldComponent from "@/components/SearchFieldComponent/SearchFieldComponent";
 import { Button, Table, TableColumnsType, message } from "antd";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  NavLink,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 import { CloseCircleOutlined, EditOutlined } from "@ant-design/icons";
 import Filter from "@/components/FilterComponent/Filter";
 import CustomPagination from "@/components/Pagination/CustomPagination";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import type { TableProps } from "antd/es/table";
 import APIResponse from "@/types/APIResponse";
@@ -16,6 +21,8 @@ import { AssetAPICaller } from "@/services/apis/asset.api";
 import { Category } from "@/types/Category";
 import { CategoryAPICaller } from "@/services/apis/category.api";
 import AssetDetailsModal from "./components/AssetDetailsModal";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import NotificationModal from "@/components/NotificationModal/NotificationModal";
 
 function ManageAssetPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,11 +37,17 @@ function ManageAssetPage() {
 
   const { asset } = location.state || {};
 
+  const [openNotificationModal, setOpenNotificationModal] = useState(false);
+
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
     setSearchParams({ search: value });
   };
+
+  const [idAsset, setIdAsset] = useState<number>(0);
 
   const params: AssetSearchParams = {
     searchString: searchParams.get("search") || "",
@@ -46,15 +59,20 @@ function ManageAssetPage() {
     pageSize: Number("20"),
   };
 
+  // UseQuery For Asset
+
   const {
     data: queryData,
     isSuccess,
     isError,
     isLoading,
     error,
+    refetch,
   } = useQuery(["getAllAssets", { params }], () =>
     AssetAPICaller.getSearchAssets(params)
   );
+
+  // UseQuery For Category
 
   const {
     data: categoryData,
@@ -64,19 +82,44 @@ function ManageAssetPage() {
     error: errorCategory,
   } = useQuery(["getAllCategory"], () => CategoryAPICaller.getAll());
 
+  // UseQuery For History
+
+  const {
+    data: historyData,
+    isSuccess: isSuccessHistory,
+    isError: isErrorHistory,
+    refetch: refetchHistory,
+  } = useQuery(
+    ["getHistoryAsset", { idAsset }],
+    () => AssetAPICaller.getAssetHistory(idAsset),
+    {
+      enabled: false,
+    }
+  );
+
+  //  useMutation For Delete Asset
+
+  const {
+    isSuccess: isSuccessDelete,
+    isError: isErrorDelete,
+    error: errorDelete,
+    mutate: deleteMutate,
+  } = useMutation(["deleteAsset", { idAsset }], () =>
+    AssetAPICaller.deleteAsset(idAsset)
+  );
+
+  // useEffect for Category
+
   useEffect(() => {
     if (isErrorCategory) {
       const errorResponse = (
         errorCategory as { response: { data: APIResponse } }
       ).response.data;
-      // console.log("error:", errorResponse);
       message.error(errorResponse.message);
     }
-
-    if (isSuccessCategory) {
-      //   setCategory(categoryData.data.result.data);
-    }
   }, [isErrorCategory, isSuccessCategory, categoryData, errorCategory]);
+
+  // useEffect for Asset
 
   useEffect(() => {
     if (isError) {
@@ -87,7 +130,6 @@ function ManageAssetPage() {
 
     if (isSuccess) {
       let temp = [...queryData.data.result.data];
-
       if (asset) {
         temp = temp.filter((item: AssetResponse) => asset.id !== item.id);
         temp.pop();
@@ -104,6 +146,35 @@ function ManageAssetPage() {
     }
     return () => message.destroy("abc");
   }, [error, isError, isSuccess, queryData]);
+
+  // useEffect for Delete Asset
+
+  useEffect(() => {
+    if (isErrorDelete) {
+      const errorResponse = (errorDelete as { response: { data: APIResponse } })
+        .response.data;
+      message.error(errorResponse.message);
+    }
+
+    if (isSuccessDelete) {
+      message.success("Delete asset successfully");
+      refetch();
+    }
+  }, [isErrorDelete, isSuccessDelete, errorDelete]);
+
+  //useEffect for History
+
+  useEffect(() => {
+    if (isSuccessHistory) {
+      console.log(historyData);
+      if (historyData.data.result == true) {
+        setOpenNotificationModal(true);
+      } else {
+        setOpenConfirmationModal(true);
+      }
+    }
+    // setEnable(false);
+  }, [isSuccessHistory, isErrorHistory, historyData]);
 
   const columns: TableColumnsType<AssetResponse> = [
     {
@@ -137,7 +208,7 @@ function ManageAssetPage() {
     {
       title: "",
       dataIndex: "action",
-      render: () => (
+      render: (_text, record) => (
         <div className="flex space-x-5">
           <EditOutlined
             onClick={(e) => {
@@ -145,12 +216,20 @@ function ManageAssetPage() {
               console.log("edit");
             }}
           />
-          <CloseCircleOutlined
-            style={{ color: "red" }}
+          {/* <Button disabled={true}> */}
+          <button
+            disabled={record.state == "ASSIGNED"}
             onClick={(e) => {
               e.stopPropagation();
+              handleDeleteButton(record.id);
             }}
-          />
+          >
+            <CloseCircleOutlined
+              data-testid="delete-asset"
+              style={{ color: record.state == "ASSIGNED" ? "black" : "red" }}
+            />
+          </button>
+          {/* </Button> */}
         </div>
       ),
       key: "action",
@@ -164,8 +243,6 @@ function ManageAssetPage() {
   ) => {
     sorter = sorter as SorterResult<AssetResponse>;
     const { field, order } = sorter;
-
-    console.log("sorter: ", field, order, sorter);
     const fieldString = field as string;
     setSearchParams((searchParams) => {
       searchParams.set("orderBy", fieldString);
@@ -191,6 +268,16 @@ function ManageAssetPage() {
 
         return searchParams;
       });
+  };
+
+  const handleDeleteButton = async (id: number) => {
+    await setIdAsset(id);
+    refetchHistory();
+  };
+
+  const handleDelete = () => {
+    deleteMutate();
+    setOpenConfirmationModal(false);
   };
 
   const baseAsset = {
@@ -280,6 +367,28 @@ function ManageAssetPage() {
         handleClose={() => {
           setShowModal(false);
         }}
+      />
+      <ConfirmationModal
+        isOpen={openConfirmationModal}
+        title={<p className="text-[#e9424d]">Are you sure?</p>}
+        message={<p>Do you want to delete thist asset?</p>}
+        onCancel={() => setOpenConfirmationModal(false)}
+        buttontext="Delete"
+        onConfirm={() => {
+          handleDelete();
+        }}
+      />
+      <NotificationModal
+        isOpen={openNotificationModal}
+        title={<p className="text-[#e9424d]">Cannot Delete Asset</p>}
+        message={
+          <p>
+            Cannot delete the asset because it belongs to one or more historical
+            assignments. If the asset is not able to be used anymore, please
+            update its state in <NavLink to={"/abc"}>Edit Asset Page</NavLink>
+          </p>
+        }
+        onCancel={() => setOpenNotificationModal(false)}
       />
     </div>
   );

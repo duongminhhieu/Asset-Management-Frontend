@@ -57,7 +57,6 @@ function ManageUserPage() {
 
     if (isSuccess) {
       let updatedItems = queryData.data.result.data;
-      console.log(newUser);
       if (newUser) {
         updatedItems = updatedItems.filter(
           (item: User) => item.id !== newUser.id

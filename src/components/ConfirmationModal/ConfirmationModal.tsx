@@ -36,7 +36,7 @@ function ConfirmationModal({
         style={{ top: "30%" }}
         // width={1500}
       >
-        <p>{message}</p>
+        {message}
       </Modal>
     </div>
   );
