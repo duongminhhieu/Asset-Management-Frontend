@@ -15,7 +15,6 @@ import {
 import { SorterResult } from "antd/es/table/interface";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
 
 function ModalSelectUser({
   isOpen,
@@ -28,17 +27,15 @@ function ModalSelectUser({
 }) {
   // state
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedUser, setSelectedUser] = useState<User>();
-
-  const params: UserSearchParams = {
-    searchString: searchParams.get("search") || "",
-    type: searchParams.get("type") || "",
-    orderBy: searchParams.get("orderBy") || undefined,
-    sortDir: searchParams.get("sortDir") || undefined,
-    pageNumber: Number(searchParams.get("page") || "1"),
-    pageSize: Number("20"),
-  };
+  const [params, setParams] = useState<UserSearchParams>({
+    searchString: "",
+    type: "",
+    orderBy: null,
+    sortDir: null,
+    pageNumber: 1,
+    pageSize: 20,
+  });
 
   // query
   const {
@@ -46,8 +43,11 @@ function ModalSelectUser({
     isError,
     isLoading,
     error,
-  } = useQuery(["getUserAssign", { params }], () =>
-    UserAPICaller.getUserAssign(params)
+    refetch,
+  } = useQuery(
+    ["getUserAssign", { params }],
+    () => UserAPICaller.getUserAssign(params),
+    { enabled: isOpen }
   );
 
   // effect
@@ -61,7 +61,12 @@ function ModalSelectUser({
 
   // handlers
   const onSearch = (value: string) => {
-    setSearchParams({ search: value });
+    setParams((params) => {
+      params.searchString = value;
+      params.pageNumber = 1;
+      return params;
+    });
+    refetch();
   };
 
   const handleTableChange: TableProps<User>["onChange"] = (
@@ -73,30 +78,29 @@ function ModalSelectUser({
     const { field, order } = sorter;
 
     const fieldString = field as string;
-    setSearchParams((searchParams) => {
-      searchParams.set("orderBy", fieldString);
-
-      return searchParams;
+    setParams((params) => {
+      params.orderBy = fieldString;
+      return params;
     });
-    if (order === "ascend") {
-      setSearchParams((searchParams) => {
-        searchParams.set("sortDir", "asc");
 
-        return searchParams;
+    if (order === "ascend") {
+      setParams((params) => {
+        params.sortDir = "asc";
+        return params;
       });
     } else if (order === "descend") {
-      setSearchParams((searchParams) => {
-        searchParams.set("sortDir", "desc");
-
-        return searchParams;
+      setParams((params) => {
+        params.sortDir = "desc";
+        return params;
       });
-    } else
-      setSearchParams((searchParams) => {
-        searchParams.delete("sortDir");
-        searchParams.delete("orderBy");
-
-        return searchParams;
+    } else {
+      setParams((params) => {
+        params.sortDir = null;
+        params.orderBy = null;
+        return params;
       });
+    }
+    refetch();
   };
 
   const columns: TableColumnsType<User> = [
@@ -140,15 +144,10 @@ function ModalSelectUser({
   const handleCancel = () => {
     setIsButtonDisabled(true);
     setIsOpenModal(false);
-    setSearchParams((searchParams) => {
-      searchParams.delete("search");
-      searchParams.delete("type");
-      searchParams.delete("orderBy");
-      searchParams.delete("sortDir");
-      searchParams.delete("page");
-      searchParams.delete("pageSize");
-
-      return searchParams;
+    setParams((params) => {
+      params.searchString = "";
+      params.pageNumber = 1;
+      return params;
     });
   };
 

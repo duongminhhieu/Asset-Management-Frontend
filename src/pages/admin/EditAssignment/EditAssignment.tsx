@@ -68,7 +68,7 @@ function EditAssignment() {
 
   // useEffect
   useEffect(() => {
-    if (isGetAssignmentSuccess) {
+    if (isGetAssignmentSuccess && assignmentData) {
       const data = assignmentData?.data as APIResponse;
       const assignment = data.result as Assignment;
 
@@ -82,7 +82,7 @@ function EditAssignment() {
       setUserSelected(assignment.assignTo);
       setAssetSelected(assignment.asset);
     }
-  }, [isGetAssignmentSuccess]);
+  }, [isGetAssignmentSuccess, assignmentData]);
 
   useEffect(() => {
     if (userSelected) {
