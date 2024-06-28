@@ -123,7 +123,7 @@ function ManageAssignmentPage() {
       title: "Assigned Date",
       dataIndex: "assignedDate",
       sorter: true,
-      key: "assignedTo",
+      key: "assignedDate",
       render: (date: Date) => dayjs(date).format("DD/MM/YYYY"),
     },
     {

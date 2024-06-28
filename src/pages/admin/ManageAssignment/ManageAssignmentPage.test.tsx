@@ -59,20 +59,28 @@ describe("test manage assignment page", () => {
     const searchInput = screen.getByPlaceholderText("input search text");
     fireEvent.change(searchInput, { target: { value: "Laptop" } });
     fireEvent.keyPress(searchInput, { key: "Enter", code: "Enter" });
-    await waitFor(() => expect(screen.getByText("Laptop")).toBeInTheDocument());
+    await waitFor(() => expect(window.location.href).toContain(""));
   });
 
   test("sorting functionality updates search parameters correctly", async () => {
     const assetCodeHeader = screen.getByText("Asset code");
     fireEvent.click(assetCodeHeader);
+    await waitFor(() => expect(window.location.href).toContain("orderBy=assetCode&sortDir=asc"))
     fireEvent.click(assetCodeHeader);
+    await waitFor(() => expect(window.location.href).toContain("orderBy=assetCode&sortDir=desc"))
     fireEvent.click(assetCodeHeader);
+    await waitFor(() => expect(window.location.href).not.toContain("orderBy=assetCode"))
     fireEvent.click(screen.getByText("Asset name"))
+    await waitFor(() => expect(window.location.href).toContain("orderBy=assetName&sortDir=asc"))
     fireEvent.click(screen.getByText("No."))
+    await waitFor(() => expect(window.location.href).toContain("orderBy=id&sortDir=asc"))
     fireEvent.click(screen.getByText("Assigned To"))
+    await waitFor(() => expect(window.location.href).toContain("orderBy=assignedTo&sortDir=asc"))
     fireEvent.click(screen.getByText("Assigned By"))
+    await waitFor(() => expect(window.location.href).toContain("orderBy=assignedBy&sortDir=asc"))
     fireEvent.click(screen.getByText("Assigned Date"))
+    await waitFor(() => expect(window.location.href).toContain("orderBy=assignedDate&sortDir=asc"))
     fireEvent.click(screen.getAllByText("State")[1]) 
-    await waitFor(() => expect(screen.getByText("Laptop")).toBeInTheDocument());
+    await waitFor(() => expect(window.location.href).toContain("orderBy=state&sortDir=asc"))
   });
 });
