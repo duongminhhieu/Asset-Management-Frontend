@@ -26,11 +26,7 @@ describe("AssignmenDetailsModal", () => {
       id: 0,
       installDate: new Date("2021-01-01"),
       EAssetSate: "",
-      category: {
-        id: 0,
-        name: "",
-        code: "",
-      },
+      category: "",
       location: {
         id: undefined,
         name: undefined,

@@ -2,14 +2,14 @@ import { Route, Routes } from "react-router-dom";
 import PublicRoute from "./layouts/public";
 import LoginPage from "./pages/public/Login/LoginPage";
 import UserRoute from "./layouts/user";
-import HomePageUser from "./pages/user/Home";
+import HomePageUser from "./pages/user/Home/Home";
 import AdminRoute from "./layouts/admin";
-import HomePageAdmin from "./pages/admin/Home";
 import AddAsset from "./pages/admin/AddAsset/AddAsset";
 import ManageUser from "./pages/admin/ManageUser/ManageUserPage";
 import ManageAssetPage from "./pages/admin/ManageAsset/ManageAssetPage";
 import CreateUser from "./pages/admin/CreateUser/CreateUser";
 import CreateAssignment from "./pages/admin/CreateAssignment/CreateAssignment";
+import EditAssignment from "./pages/admin/EditAssignment/EditAssignment";
 import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmentPage";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
           path="/admin"
           element={
             <AdminRoute>
-              <HomePageAdmin />
+              <HomePageUser />
             </AdminRoute>
           }
         />
@@ -75,6 +75,16 @@ function App() {
             </AdminRoute>
           }
         />
+
+        <Route
+          path="/admin/assignments/edit-assignment/:id"
+          element={
+            <AdminRoute>
+              <EditAssignment />
+            </AdminRoute>
+          }
+        />
+
         {/* User Route */}
         <Route
           path="/"

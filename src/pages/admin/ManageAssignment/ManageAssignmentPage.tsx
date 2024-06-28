@@ -12,13 +12,21 @@ import {
   EditOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import { Button, Table, TableColumnsType, TableProps, message } from "antd";
+import {
+  Badge,
+  Button,
+  Table,
+  TableColumnsType,
+  TableProps,
+  message,
+} from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import AssignmenDetailsModal from "./components/AssignmentDetailsModal";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 function ManageAssignmentPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,6 +36,9 @@ function ManageAssignmentPage() {
     setSearchParams({ search: value });
   };
   const location = useLocation();
+  const [isOpenDeleteAssignmentModal, setIsOpenDeleteAssignmentModal] =
+    useState<boolean>(false);
+  const [idToDelete, setIdToDelete] = useState<number>(0);
 
   const { assignment } = location.state || {};
 
@@ -49,9 +60,17 @@ function ManageAssignmentPage() {
     isError,
     isLoading,
     error,
-  } = useQuery(["getAllAssets", { params }], () =>
+    refetch,
+  } = useQuery(["getAllAssignment", { params }], () =>
     AssignmentAPICaller.getSearchAssignments(params)
   );
+
+  const {
+    mutate,
+    isSuccess: isDeleteSuccess,
+    isError: isDeleteError,
+    error: errorDelete,
+  } = useMutation(AssignmentAPICaller.deleteAssignment);
 
   const displayState = {
     ACCEPTED: "Accepted",
@@ -72,9 +91,10 @@ function ManageAssignmentPage() {
     if (isSuccess) {
       let temp = [...queryData.data.result.data];
       if (assignment) {
+        const newAssignment = { ...assignment, isNew: true };
         temp = temp.filter((item) => item.id !== assignment.id);
 
-        temp = [assignment, ...temp];
+        temp = [newAssignment, ...temp];
         while (temp.length > 20) {
           temp.pop();
         }
@@ -83,6 +103,19 @@ function ManageAssignmentPage() {
       setItems(temp);
     }
   }, [error, isError, isSuccess, queryData]);
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      message.success("Assignment deleted successfully");
+      refetch();
+      setIsOpenDeleteAssignmentModal(false);
+    }
+    if (isDeleteError) {
+      const errorResponse = (errorDelete as { response: { data: APIResponse } })
+        .response?.data;
+      message.error(errorResponse?.message);
+    }
+  }, [isDeleteSuccess, isDeleteError]);
 
   const columns: TableColumnsType<AssignmentResponse> = [
     {
@@ -137,20 +170,25 @@ function ManageAssignmentPage() {
     {
       title: "",
       dataIndex: "action",
-      render: () => (
+      render: (_, record) => (
         <div className="flex space-x-5">
           <EditOutlined
             onClick={(e) => {
               e.stopPropagation();
+              navigate(`/admin/assignments/edit-assignment/${record.id}`);
             }}
           />
           <CloseCircleOutlined
             style={{ color: "red" }}
             onClick={(e) => {
               e.stopPropagation();
+              setIdToDelete(record.id);
+              setIsOpenDeleteAssignmentModal(true);
             }}
           />
           <ReloadOutlined style={{ color: "blue" }} />
+
+          {record.isNew && <Badge count={"New"} />}
         </div>
       ),
       key: "action",
@@ -248,6 +286,19 @@ function ManageAssignmentPage() {
           totalItems={queryData?.data.result.total}
         ></CustomPagination>
       </div>
+
+      <ConfirmationModal
+        isOpen={isOpenDeleteAssignmentModal}
+        title={<div className="text-[#cf2338]">Are you sure ?</div>}
+        message="Do you want to delete this assignment?"
+        buttontext="Delete"
+        onConfirm={() => {
+          mutate(idToDelete);
+        }}
+        onCancel={() => {
+          setIsOpenDeleteAssignmentModal(false);
+        }}
+      />
     </div>
   );
 }

@@ -39,6 +39,8 @@ function getNameBreadcrumb(key: string) {
       return "Create New Asset";
     case "create-assignment":
       return "Create New Assignment";
+    case "edit-assignment":
+      return "Edit Assignment";
     default:
       return key;
   }

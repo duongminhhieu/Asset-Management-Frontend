@@ -22,7 +22,7 @@ function UserRoute({ children }: UserRouteProps) {
         <HeaderUser />
         <Layout>
           <SliderBarUser />
-          <Layout className="mt-4 mx-10 ">{children}</Layout>
+          <Layout className="mt-16 mx-10 ">{children}</Layout>
         </Layout>
         <FooterPublic />
       </Layout>

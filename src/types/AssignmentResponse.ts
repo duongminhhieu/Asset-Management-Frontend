@@ -1,4 +1,4 @@
-import { Asset } from "./Asset"
+import { AssetResponse } from "./Asset"
 
 export type AssignmentResponse = {
     id: number
@@ -6,7 +6,8 @@ export type AssignmentResponse = {
     note: string,
     assignTo: string,
     assignBy: string,
-    asset: Asset,
+    asset: AssetResponse,
     returnDate: Date | null,
     state: string
+    isNew?: boolean
 }

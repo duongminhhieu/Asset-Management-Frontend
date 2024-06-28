@@ -14,12 +14,13 @@ import APIResponse from "../../../types/APIResponse";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { Asset } from "@/types/Asset";
+import dayjs from "dayjs";
 
 interface FormValues {
   name?: string;
   category?: string;
   specification?: string;
-  installedDate?: Date;
+  installedDate?: string;
   state: "available" | "not_available";
 }
 
@@ -54,7 +55,11 @@ function AddAsset() {
   }, [isError, isSuccess]);
 
   const onFinish = (values: FormValues) => {
-    mutate(values);
+    let body = {
+      ...values,
+      installDate: dayjs(values.installedDate).format("YYYY-MM-DD"),
+    };
+    mutate(body);
   };
 
   const handleCancel = () => {

@@ -15,7 +15,6 @@ import APIResponse from "@/types/APIResponse";
 import { SorterResult } from "antd/es/table/interface";
 import UserDetailsModal from "./components/UserDetailsModal";
 import { useNavigate, useLocation } from "react-router-dom";
-
 function ManageUserPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -57,6 +56,7 @@ function ManageUserPage() {
 
     if (isSuccess) {
       let updatedItems = queryData.data.result.data;
+      console.log(newUser);
       if (newUser) {
         updatedItems = updatedItems.filter(
           (item: User) => item.id !== newUser.id

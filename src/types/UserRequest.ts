@@ -1,9 +1,9 @@
 export type UserRequest = {
   firstName: string;
   lastName: string;
-  dob: Date;
+  dob: string;
   gender: string;
-  joinDate: Date;
+  joinDate: string;
   role: string;
   locationId?: number;
 };
