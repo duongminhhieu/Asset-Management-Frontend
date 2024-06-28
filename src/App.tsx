@@ -9,6 +9,7 @@ import AddAsset from "./pages/admin/AddAsset/AddAsset";
 import ManageUser from "./pages/admin/ManageUser/ManageUserPage";
 import ManageAssetPage from "./pages/admin/ManageAsset/ManageAssetPage";
 import CreateUser from "./pages/admin/CreateUser/CreateUser";
+import CreateAssignment from "./pages/admin/CreateAssignment/CreateAssignment";
 import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmentPage";
 
 function App() {
@@ -23,7 +24,6 @@ function App() {
             </PublicRoute>
           }
         />
-
         {/* Admin Route */}
         <Route
           path="/admin"
@@ -33,7 +33,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/admin/users"
           element={
@@ -42,7 +41,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/admin/assets"
           element={
@@ -51,7 +49,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/admin/assets/create-asset"
           element={
@@ -70,6 +67,14 @@ function App() {
           }
         />
 
+        <Route
+          path="/admin/assignments/create-assignment"
+          element={
+            <AdminRoute>
+              <CreateAssignment />
+            </AdminRoute>
+          }
+        />
         {/* User Route */}
         <Route
           path="/"
@@ -79,7 +84,6 @@ function App() {
             </UserRoute>
           }
         />
-
         <Route
           path="/admin/users/createUser"
           element={
@@ -88,7 +92,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/*"
           element={

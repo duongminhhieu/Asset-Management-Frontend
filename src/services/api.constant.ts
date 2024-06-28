@@ -5,6 +5,7 @@ export class APIConstants {
 
   static USER = {
     GET_USERS: "/users",
+    GET_USER_ASSIGN: "/users/assign",
     UPDATE_USER: "/user",
     CREATE_USER: "/users",
     GENERATE_USERNAME: "/users/generate-username",
@@ -30,6 +31,7 @@ export class APIConstants {
 
   static ASSIGNMENT = {
     HISTORY: (assetId: number) => `/assignments/${assetId}/history`,
+    CREATE_ASSIGNMENT: "/assignments",
     GET_ASSIGNMENTS: "/assignments"
   };
 }

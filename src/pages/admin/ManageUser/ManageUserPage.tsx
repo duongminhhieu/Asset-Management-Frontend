@@ -62,7 +62,7 @@ function ManageUserPage() {
           (item: User) => item.id !== newUser.id
         );
         updatedItems = [newUser, ...updatedItems];
-        if (updatedItems.length === 18) {
+        while (updatedItems.length > 20) {
           updatedItems.pop();
         }
       }
@@ -224,6 +224,7 @@ function ManageUserPage() {
           loading={isLoading}
           dataSource={items}
           rowKey={(record) => record.id}
+          rowClassName={"cursor-pointer"}
           onChange={handleTableChange}
           onRow={(_, index) => {
             return {

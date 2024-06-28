@@ -132,8 +132,10 @@ function ManageAssetPage() {
       let temp = [...queryData.data.result.data];
       if (asset) {
         temp = temp.filter((item: AssetResponse) => asset.id !== item.id);
-        temp.pop();
         temp = [asset, ...temp];
+        while (temp.length > 20) {
+          temp.pop();
+        }
         const msg = {
           content: "Create asset successfully",
           duration: 5,
@@ -166,7 +168,6 @@ function ManageAssetPage() {
 
   useEffect(() => {
     if (isSuccessHistory) {
-      console.log(historyData);
       if (historyData.data.result == true) {
         setOpenNotificationModal(true);
       } else {
@@ -182,7 +183,7 @@ function ManageAssetPage() {
       dataIndex: "assetCode",
       showSorterTooltip: true,
       sorter: true, // add API later
-      key: "assetCode"
+      key: "assetCode",
     },
     {
       title: "Asset Name",
@@ -190,7 +191,7 @@ function ManageAssetPage() {
       showSorterTooltip: true,
       sorter: true, // add API later
       key: "Name",
-      ellipsis: true
+      ellipsis: true,
     },
     {
       title: "Category",
@@ -214,7 +215,6 @@ function ManageAssetPage() {
           <EditOutlined
             onClick={(e) => {
               e.stopPropagation();
-              console.log("edit");
             }}
           />
           {/* <Button disabled={true}> */}
@@ -346,6 +346,7 @@ function ManageAssetPage() {
           onChange={handleTableChange}
           loading={isLoading && isLoadingCategory}
           dataSource={items}
+          rowClassName={"cursor-pointer"}
           onRow={(_, index) => {
             return {
               onClick: (e) => {

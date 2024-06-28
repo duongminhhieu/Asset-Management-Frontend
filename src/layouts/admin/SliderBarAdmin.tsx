@@ -46,9 +46,9 @@ function SliderBarAdmin() {
       case "assets":
         navigate("/admin/assets");
         break;
-        case "assignments":
-          navigate("/admin/assignments");
-          break;
+      case "assignments":
+        navigate("/admin/assignments");
+        break;
       default:
         break;
     }

@@ -102,7 +102,7 @@ function AddAsset() {
       onFinish={onFinish}
       onFieldsChange={handleFieldsChange}
     >
-      <Typography className="text-xl font-semibold text-red-500 font-serif pb-5">
+      <Typography className="text-xl font-semibold text-[#cf2338] font-serif pb-5">
         Create New Asset
       </Typography>
 

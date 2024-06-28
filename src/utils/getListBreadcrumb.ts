@@ -1,7 +1,7 @@
 function getListBreadcrumb(path: string) {
   const listPath = path.split("/");
 
-    const breadcrumb = [];
+  const breadcrumb = [];
 
   for (let i = 0; i < listPath.length; i++) {
     if (listPath[i] === "admin" || listPath[i] === "") {
@@ -37,6 +37,8 @@ function getNameBreadcrumb(key: string) {
       return "Create User";
     case "create-asset":
       return "Create New Asset";
+    case "create-assignment":
+      return "Create New Assignment";
     default:
       return key;
   }

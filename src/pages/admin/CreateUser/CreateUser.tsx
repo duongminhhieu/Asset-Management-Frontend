@@ -50,21 +50,13 @@ const CreateUser: React.FC = () => {
       locationId: values.location,
     };
 
-    console.log("Success:", requestData);
     UserAPICaller.createUser(requestData)
       .then((response) => {
-        console.log("User created successfully:", response.data);
         navigate("/admin/users", { state: { newUser: response.data.result } });
       })
       .catch((error) => {
         console.error("Error creating user:", error);
-        console.log(requestData);
       });
-  };
-
-  const onFinishFailed = (errorInfo: unknown) => {
-    console.log("Failed:", errorInfo);
-    console.log(form);
   };
 
   const validateWhitespace = (_: unknown, value: string) => {
@@ -138,17 +130,14 @@ const CreateUser: React.FC = () => {
     const isJoinDateValid = fieldsValues.joinDate != null;
     const isRoleValid = fieldsValues.role != null && fieldsValues.role !== "";
 
-
     setIsButtonDisabled(
       !(
-        (
-          isFirstNameValid &&
-          isLastNameValid &&
-          isDobValid &&
-          isGenderValid &&
-          isJoinDateValid &&
-          isRoleValid 
-        ) 
+        isFirstNameValid &&
+        isLastNameValid &&
+        isDobValid &&
+        isGenderValid &&
+        isJoinDateValid &&
+        isRoleValid
       )
     );
 
@@ -172,7 +161,6 @@ const CreateUser: React.FC = () => {
       colon={false}
       requiredMark={false}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       onFieldsChange={handleFieldsChange}
     >
       <Typography className="text-xl font-semibold text-red-500 font-serif pb-5">

@@ -24,23 +24,16 @@ export class UserAPICaller {
   };
 
   static createUser = (userData: UserRequest) =>
-      instance.post(APIConstants.USER.CREATE_USER, userData);
+    instance.post(APIConstants.USER.CREATE_USER, userData);
 
-  // static createUser = (userData: UserRequest, token: string) => {
-  //   const config: AxiosRequestConfig = {
-  //     baseURL: process.env.VITE_BACKEND_URL,
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //       "Content-type": "application/json",
-  //     },
-  //   };
-  //   return axios.post(APIConstants.USER.CREATE_USER, userData, config);
-  // };
 
   static getSearchUser = (userSearchParams: UserSearchParams) => {
-    console.log(userSearchParams);
-
     return instance.get(APIConstants.USER.GET_USERS, {
+      params: userSearchParams,
+    });
+  };
+  static getUserAssign = (userSearchParams: UserSearchParams) => {
+    return instance.get(APIConstants.USER.GET_USER_ASSIGN, {
       params: userSearchParams,
     });
   };

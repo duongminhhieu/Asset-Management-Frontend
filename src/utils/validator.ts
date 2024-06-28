@@ -56,3 +56,12 @@ export const validatorPassword = (value: string) => {
         message: ""
     }
 };
+
+export const validateWhitespace = (_: unknown, value: string) => {
+    if (value && !/^\s|\s$/.test(value)) {
+        return Promise.resolve();
+    }
+    return Promise.reject(
+        new Error("Cannot empty and no start and trailing spaces")
+    );
+};

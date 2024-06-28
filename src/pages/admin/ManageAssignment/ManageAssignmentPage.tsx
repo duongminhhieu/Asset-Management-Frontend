@@ -17,7 +17,7 @@ import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 function ManageAssignmentPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,6 +26,9 @@ function ManageAssignmentPage() {
   const onSearch = (value: string) => {
     setSearchParams({ search: value });
   };
+  const location = useLocation();
+
+  const { assignment } = location.state || {};
 
   const params: AssignmentSearchParams = {
     searchString: searchParams.get("search") || "",
@@ -50,8 +53,8 @@ function ManageAssignmentPage() {
   const displayState = {
     ACCEPTED: "Accepted",
     WAITING: "Waiting for acceptance",
-    DECLINED: "Declined"
-  }
+    DECLINED: "Declined",
+  };
 
   useEffect(() => {
     if (isError) {
@@ -62,7 +65,16 @@ function ManageAssignmentPage() {
     }
 
     if (isSuccess) {
-      const temp = [...queryData.data.result.data];
+      let temp = [...queryData.data.result.data];
+      if (assignment) {
+        temp = temp.filter((item) => item.id !== assignment.id);
+
+        temp = [assignment, ...temp];
+        while (temp.length > 20) {
+          temp.pop();
+        }
+      }
+      window.history.replaceState({}, "");
       setItems(temp);
     }
     return () => message.destroy("abc");
@@ -115,7 +127,8 @@ function ManageAssignmentPage() {
       dataIndex: "state",
       sorter: true,
       key: "state",
-      render: (state: "ACCEPTED"|"DECLINED"|"WAITING") => displayState[state],
+      render: (state: "ACCEPTED" | "DECLINED" | "WAITING") =>
+        displayState[state],
     },
     {
       title: "",
@@ -186,7 +199,7 @@ function ManageAssignmentPage() {
             ]}
             paramName={"states"}
           />
-          <DateFilter paramName={"assignedDate"}/>
+          <DateFilter paramName={"assignedDate"} />
         </div>
         <div className=" flex flex-1 justify-end space-x-5">
           <SearchFieldComponent onSearch={onSearch} />
@@ -211,10 +224,10 @@ function ManageAssignmentPage() {
         />{" "}
       </div>
       <div className="pt-8 flex justify-end">
-          <CustomPagination
-            totalItems={queryData?.data.result.total}
-          ></CustomPagination>
-        </div>
+        <CustomPagination
+          totalItems={queryData?.data.result.total}
+        ></CustomPagination>
+      </div>
     </div>
   );
 }

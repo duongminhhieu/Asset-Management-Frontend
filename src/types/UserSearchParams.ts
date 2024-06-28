@@ -1,8 +1,8 @@
 type UserSearchParams = {
   searchString: string;
   type: string;
-  orderBy?: string | undefined;
-  sortDir?: string | undefined;
+  orderBy?: string | null | undefined;
+  sortDir?: string | null | undefined;
   pageNumber: number;
   pageSize: number;
 };
