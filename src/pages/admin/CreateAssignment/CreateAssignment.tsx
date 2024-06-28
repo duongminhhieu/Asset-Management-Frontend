@@ -168,6 +168,7 @@ function CreateAssignment() {
         <Form.Item
           name="note"
           label="Note"
+          hasFeedback
           labelAlign="left"
           rules={[
             { max: 1024, message: "Must be less than 1024 characters!" },
