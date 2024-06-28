@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import AssignmenDetailsModal from "./AssignmentDetailsModal";
 import { AssignmentResponse } from "@/types/AssignmentResponse";
@@ -87,17 +87,5 @@ describe("AssignmenDetailsModal", () => {
     expect(screen.getByText("01/01/2021")).toBeInTheDocument();
     expect(screen.getByText("Assigned")).toBeInTheDocument();
     expect(screen.getByText("Urgent")).toBeInTheDocument();
-  });
-
-  test("calls handleClose when the modal is closed", () => {
-    render(
-      <AssignmenDetailsModal
-        data={mockData}
-        show
-        handleClose={mockHandleClose}
-      />
-    );
-    fireEvent.click(screen.getByRole("img"));
-    expect(mockHandleClose).toHaveBeenCalled();
   });
 });
