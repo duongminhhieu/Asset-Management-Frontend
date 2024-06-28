@@ -4,7 +4,6 @@ import ModalSelectUser from "./components/ModalSelectUser";
 import { useEffect, useState } from "react";
 import ModalSelectAsset from "./components/ModalSelectAsset";
 import { User } from "@/types/User";
-import { validateWhitespace } from "@/utils/validator";
 import { AssetResponse } from "@/types/Asset";
 import { useMutation } from "react-query";
 import { AssignmentAPICaller } from "@/services/apis/assignment.api";
@@ -91,9 +90,9 @@ function CreateAssignment() {
 
   const handleFieldsChange = () => {
     const fields = form.getFieldsValue();
-    const { fullName, assetName, assignedDate, note } = fields;
+    const { fullName, assetName, assignedDate } = fields;
 
-    setIsButtonDisabled(!fullName || !assetName || !assignedDate || !note);
+    setIsButtonDisabled(!fullName || !assetName || !assignedDate);
   };
 
   return (
@@ -168,12 +167,8 @@ function CreateAssignment() {
         <Form.Item
           name="note"
           label="Note"
-          hasFeedback
           labelAlign="left"
-          rules={[
-            { max: 1024, message: "Must be less than 1024 characters!" },
-            { validator: validateWhitespace },
-          ]}
+          rules={[{ max: 1024, message: "Must be less than 1024 characters!" }]}
         >
           <Input.TextArea rows={4} placeholder="Note" />
         </Form.Item>

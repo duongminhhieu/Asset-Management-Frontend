@@ -1,4 +1,3 @@
-import { validateWhitespace } from "@/utils/validator";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import {
   Button,
@@ -139,9 +138,9 @@ function EditAssignment() {
 
   const handleFieldsChange = () => {
     const fields = form.getFieldsValue();
-    const { fullName, assetName, assignedDate, note } = fields;
+    const { fullName, assetName, assignedDate } = fields;
 
-    setIsButtonDisabled(!fullName || !assetName || !assignedDate || !note);
+    setIsButtonDisabled(!fullName || !assetName || !assignedDate);
   };
 
   if (isGetAssignmentLoading) {
@@ -236,10 +235,7 @@ function EditAssignment() {
           label="Note"
           labelAlign="left"
           hasFeedback
-          rules={[
-            { max: 1024, message: "Must be less than 1024 characters!" },
-            { validator: validateWhitespace },
-          ]}
+          rules={[{ max: 1024, message: "Must be less than 1024 characters!" }]}
         >
           <Input.TextArea rows={4} placeholder="Note" />
         </Form.Item>
