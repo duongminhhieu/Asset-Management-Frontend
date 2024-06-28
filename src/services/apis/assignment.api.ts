@@ -25,4 +25,7 @@ export class AssignmentAPICaller {
             params: assetSearchParams,
         });
     };
+    static deleteAssignment = (id: number) => {
+        return instance.delete(APIConstants.ASSIGNMENT.DELETE_ASSIGNMENT(id));
+    };
 }
