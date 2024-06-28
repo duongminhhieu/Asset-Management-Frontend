@@ -43,6 +43,7 @@ function AddAsset() {
 
     if (isSuccess) {
       const newAsset: Asset = data.data.result;
+      message.success("Create success");
       navigate("/admin/assets", {
         state: {
           message: "Create success",

@@ -136,17 +136,10 @@ function ManageAssetPage() {
         while (temp.length > 20) {
           temp.pop();
         }
-        const msg = {
-          content: "Create asset successfully",
-          duration: 5,
-          key: "abc",
-        };
-        message.success(msg);
       }
       window.history.replaceState({}, "");
       setItems(temp);
     }
-    return () => message.destroy("abc");
   }, [error, isError, isSuccess, queryData]);
 
   // useEffect for Delete Asset

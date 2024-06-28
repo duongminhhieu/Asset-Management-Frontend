@@ -17,6 +17,7 @@ import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import AssignmenDetailsModal from "./components/AssignmentDetailsModal";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 function ManageAssignmentPage() {
@@ -29,6 +30,8 @@ function ManageAssignmentPage() {
   const location = useLocation();
 
   const { assignment } = location.state || {};
+
+  const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
 
   const params: AssignmentSearchParams = {
     searchString: searchParams.get("search") || "",
@@ -56,6 +59,8 @@ function ManageAssignmentPage() {
     DECLINED: "Declined",
   };
 
+  const [assignmentData, setAssignmentData] = useState<AssignmentResponse>();
+
   useEffect(() => {
     if (isError) {
       const errorResponse = (error as { response: { data: APIResponse } })
@@ -77,7 +82,6 @@ function ManageAssignmentPage() {
       window.history.replaceState({}, "");
       setItems(temp);
     }
-    return () => message.destroy("abc");
   }, [error, isError, isSuccess, queryData]);
 
   const columns: TableColumnsType<AssignmentResponse> = [
@@ -221,8 +225,24 @@ function ManageAssignmentPage() {
           onChange={handleTableChange}
           pagination={false}
           rowKey={(record) => record.id}
+          rowClassName={"cursor-pointer"}
+          onRow={(_, index) => {
+            return {
+              onClick: (e) => {
+                e.stopPropagation();
+                console.log(index);
+                setAssignmentData(items[index || 0]);
+                setShowDetailModal(true);
+              },
+            };
+          }}
         />{" "}
       </div>
+      <AssignmenDetailsModal
+        data={assignmentData}
+        show={showDetailModal}
+        handleClose={() => setShowDetailModal(false)}
+      />
       <div className="pt-8 flex justify-end">
         <CustomPagination
           totalItems={queryData?.data.result.total}
