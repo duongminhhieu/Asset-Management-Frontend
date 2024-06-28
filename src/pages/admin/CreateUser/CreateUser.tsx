@@ -6,7 +6,7 @@ import UsernameGenerator from "./components/UsernameGenerator";
 import { UserAPICaller } from "../../../services/apis/user.api";
 import { UserRequest } from "@/types/UserRequest";
 import { useNavigate } from "react-router-dom";
-import moment from "moment-timezone";
+import dayjs from "dayjs";
 
 interface FormValues {
   firstName: string;
@@ -28,24 +28,15 @@ const CreateUser: React.FC = () => {
 
   const onFinish = (values: FormValues) => {
     if (userType === "ADMIN" && !values.location) {
-      form.setFields([
-        {
-          name: "location",
-          errors: ["Please select a location!"],
-        },
-      ]);
-      return;
+      values.location = 1;
     }
-
-    let dobFormat = new Date(values.dob);
-    dobFormat.setDate(dobFormat.getDate() + 1);
 
     const requestData: UserRequest = {
       firstName: values.firstName,
       lastName: values.lastName,
-      dob: dobFormat,
+      dob: dayjs(values.dob).format("YYYY-MM-DD"),
       gender: values.gender,
-      joinDate: moment.utc(values.joinDate).tz("Asia/Ho_Chi_Minh").toDate(),
+      joinDate: dayjs(values.joinDate).format("YYYY-MM-DD"),
       role: values.role,
       locationId: values.location,
     };
@@ -69,7 +60,7 @@ const CreateUser: React.FC = () => {
     }
 
     // Check if the value contains only letters, digits, or underscores
-    else if (/^[a-zA-Z0-9 ]+$/.test(value)) {
+    else if (/^[a-zA-Z ]+$/.test(value)) {
       return Promise.resolve();
     }
 
@@ -140,7 +131,6 @@ const CreateUser: React.FC = () => {
         isRoleValid
       )
     );
-
     setUsername(
       isFirstNameValid && isLastNameValid ? `${firstName} ${lastName}` : ""
     );
@@ -218,10 +208,13 @@ const CreateUser: React.FC = () => {
         name="gender"
         label="Gender"
         labelAlign="left"
+        data-testid="gender"
         rules={[{ required: true, message: "Please select a gender!" }]}
       >
         <Radio.Group className="flex flex-row">
-          <Radio value="FEMALE">Female</Radio>
+          <Radio data-testid="male-option" value="FEMALE">
+            Female
+          </Radio>
           <Radio value="MALE">Male</Radio>
         </Radio.Group>
       </Form.Item>
@@ -261,7 +254,6 @@ const CreateUser: React.FC = () => {
           name="location"
           hasFeedback
           labelAlign="left"
-          rules={[{ required: true, message: "Please enter a location!" }]}
         >
           <LocationSelector />
         </Form.Item>

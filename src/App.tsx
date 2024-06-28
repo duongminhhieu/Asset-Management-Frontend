@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import PublicRoute from "./layouts/public";
 import LoginPage from "./pages/public/Login/LoginPage";
 import UserRoute from "./layouts/user";
-import HomePageUser from "./pages/user/Home";
+import HomePageUser from "./pages/user/Home/Home";
 import AdminRoute from "./layouts/admin";
 import HomePageAdmin from "./pages/admin/Home";
 import AddAsset from "./pages/admin/AddAsset/AddAsset";
@@ -30,7 +30,7 @@ function App() {
           path="/admin"
           element={
             <AdminRoute>
-              <HomePageAdmin />
+              <HomePageUser />
             </AdminRoute>
           }
         />

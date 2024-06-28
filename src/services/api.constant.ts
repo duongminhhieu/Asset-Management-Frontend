@@ -36,5 +36,7 @@ export class APIConstants {
     DELETE_ASSIGNMENT: (id: number) => `/assignments/${id}`,
     GET_ASSIGNMENT: (assignmentId: number) => `/assignments/${assignmentId}`,
     UPDATE_ASSIGNMENT: (assignmentId: number) => `/assignments/${assignmentId}`,
+    GET_MY_ASSIGNMENTS: "/assignments/me",
+    CHANGE_STATE: (id: number) => `/assignments/${id}`,
   };
 }
