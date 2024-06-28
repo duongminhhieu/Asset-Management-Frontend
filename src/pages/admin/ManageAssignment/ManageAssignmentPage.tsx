@@ -12,7 +12,14 @@ import {
   EditOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import { Button, Table, TableColumnsType, TableProps, message } from "antd";
+import {
+  Badge,
+  Button,
+  Table,
+  TableColumnsType,
+  TableProps,
+  message,
+} from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -72,9 +79,10 @@ function ManageAssignmentPage() {
     if (isSuccess) {
       let temp = [...queryData.data.result.data];
       if (assignment) {
+        const newAssignment = { ...assignment, isNew: true };
         temp = temp.filter((item) => item.id !== assignment.id);
 
-        temp = [assignment, ...temp];
+        temp = [newAssignment, ...temp];
         while (temp.length > 20) {
           temp.pop();
         }
@@ -137,11 +145,12 @@ function ManageAssignmentPage() {
     {
       title: "",
       dataIndex: "action",
-      render: () => (
+      render: (_, record) => (
         <div className="flex space-x-5">
           <EditOutlined
             onClick={(e) => {
               e.stopPropagation();
+              navigate(`/admin/assignments/edit-assignment/${record.id}`);
             }}
           />
           <CloseCircleOutlined
@@ -151,6 +160,8 @@ function ManageAssignmentPage() {
             }}
           />
           <ReloadOutlined style={{ color: "blue" }} />
+
+          {record.isNew && <Badge count={"New"} />}
         </div>
       ),
       key: "action",

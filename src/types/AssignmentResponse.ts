@@ -9,4 +9,5 @@ export type AssignmentResponse = {
     asset: Asset,
     returnDate: Date | null,
     state: string
+    isNew?: boolean
 }
