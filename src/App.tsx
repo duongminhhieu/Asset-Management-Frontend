@@ -9,6 +9,7 @@ import AddAsset from "./pages/admin/AddAsset/AddAsset";
 import ManageUser from "./pages/admin/ManageUser/ManageUserPage";
 import ManageAssetPage from "./pages/admin/ManageAsset/ManageAssetPage";
 import CreateUser from "./pages/admin/CreateUser/CreateUser";
+import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmentPage";
 
 function App() {
   return (
@@ -56,6 +57,15 @@ function App() {
           element={
             <AdminRoute>
               <AddAsset />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/assignments"
+          element={
+            <AdminRoute>
+              <ManageAssignmentPage />
             </AdminRoute>
           }
         />

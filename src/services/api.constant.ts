@@ -30,5 +30,6 @@ export class APIConstants {
 
   static ASSIGNMENT = {
     HISTORY: (assetId: number) => `/assignments/${assetId}/history`,
+    GET_ASSIGNMENTS: "/assignments"
   };
 }

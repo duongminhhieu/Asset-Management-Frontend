@@ -103,12 +103,14 @@ function ManageUserPage() {
       sorter: true, // add API later
       render: (_text, record) => `${record.firstName} ${record.lastName}`,
       key: "Name",
+      ellipsis: true,
     },
     {
       title: "Username",
       dataIndex: "username",
       showSorterTooltip: true,
       key: "username",
+      ellipsis: true,
     },
     {
       title: "Joined Date",
@@ -122,7 +124,8 @@ function ManageUserPage() {
       title: "Type",
       dataIndex: "type",
       showSorterTooltip: true,
-      sorter: true, // add API later
+      sorter: true,
+      ellipsis: true, // add API later
       render: (_text, record) => {
         return record.type === "ADMIN" ? "Admin" : "Staff";
       },

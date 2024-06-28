@@ -182,7 +182,7 @@ function ManageAssetPage() {
       dataIndex: "assetCode",
       showSorterTooltip: true,
       sorter: true, // add API later
-      key: "assetCode",
+      key: "assetCode"
     },
     {
       title: "Asset Name",
@@ -190,6 +190,7 @@ function ManageAssetPage() {
       showSorterTooltip: true,
       sorter: true, // add API later
       key: "Name",
+      ellipsis: true
     },
     {
       title: "Category",
