@@ -4,7 +4,6 @@ import LoginPage from "./pages/public/Login/LoginPage";
 import UserRoute from "./layouts/user";
 import HomePageUser from "./pages/user/Home/Home";
 import AdminRoute from "./layouts/admin";
-import HomePageAdmin from "./pages/admin/Home";
 import AddAsset from "./pages/admin/AddAsset/AddAsset";
 import ManageUser from "./pages/admin/ManageUser/ManageUserPage";
 import ManageAssetPage from "./pages/admin/ManageAsset/ManageAssetPage";
