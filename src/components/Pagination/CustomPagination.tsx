@@ -4,12 +4,20 @@ import { useSearchParams } from "react-router-dom";
 
 interface Props {
   totalItems: number;
+  pageSize?: number;
+  handleChange?: (page: number) => void;
+  currentPageNumber?: number;
 }
 
-const CustomPagination: React.FC<Props> = ({ totalItems }) => {
+const CustomPagination: React.FC<Props> = ({
+  totalItems,
+  pageSize,
+  handleChange,
+  currentPageNumber,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState<number>(
-    Number(searchParams.get("page") || "1")
+    currentPageNumber || Number(searchParams.get("page") || 1)
   );
 
   const itemRender: PaginationProps["itemRender"] = (
@@ -49,8 +57,15 @@ const CustomPagination: React.FC<Props> = ({ totalItems }) => {
         <Pagination
           current={currentPage}
           total={totalItems}
-          pageSize={20}
-          onChange={handleOnChange}
+          pageSize={pageSize || 20}
+          onChange={
+            handleChange
+              ? (page) => {
+                  handleChange(page);
+                  setCurrentPage(page);
+                }
+              : handleOnChange
+          }
           showSizeChanger={false}
           showQuickJumper={false}
           showPrevNextJumpers={false}

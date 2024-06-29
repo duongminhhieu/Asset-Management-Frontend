@@ -16,6 +16,8 @@ import { SorterResult } from "antd/es/table/interface";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
+const PAGE_SIZE = 10;
+
 function ModalSelectAsset({
   isOpen,
   setIsOpenModal,
@@ -35,7 +37,7 @@ function ModalSelectAsset({
     orderBy: undefined,
     sortDir: undefined,
     pageNumber: 1,
-    pageSize: 20,
+    pageSize: PAGE_SIZE,
   });
 
   // query
@@ -124,6 +126,19 @@ function ModalSelectAsset({
       name: record.name,
     }),
   };
+  
+  const handlePageChange = (page : number) =>{
+    setParams({
+      searchString: "",
+      states: "AVAILABLE",
+      categoryIds: "",
+      orderBy: undefined,
+      sortDir: undefined,
+      pageNumber: page,
+      pageSize: PAGE_SIZE,
+    });
+    refetch();
+  }
 
   const handleCancel = () => {
     setIsButtonDisabled(true);
@@ -135,7 +150,7 @@ function ModalSelectAsset({
       orderBy: undefined,
       sortDir: undefined,
       pageNumber: 1,
-      pageSize: 20,
+      pageSize: PAGE_SIZE,
     });
   };
 
@@ -191,6 +206,9 @@ function ModalSelectAsset({
         <div className="my-4 flex justify-end">
           <CustomPagination
             totalItems={queryData?.data.result.total}
+            pageSize={PAGE_SIZE}
+            handleChange={handlePageChange}
+            currentPageNumber={params.pageNumber}
           ></CustomPagination>
         </div>
       </Modal>

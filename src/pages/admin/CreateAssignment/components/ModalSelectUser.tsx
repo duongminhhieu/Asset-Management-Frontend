@@ -16,6 +16,8 @@ import { SorterResult } from "antd/es/table/interface";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
+const PAGE_SIZE = 10; 
+
 function ModalSelectUser({
   isOpen,
   setIsOpenModal,
@@ -34,7 +36,7 @@ function ModalSelectUser({
     orderBy: null,
     sortDir: null,
     pageNumber: 1,
-    pageSize: 20,
+    pageSize: PAGE_SIZE,
   });
 
   // query
@@ -131,6 +133,14 @@ function ModalSelectUser({
     },
   ];
 
+  const handlePageChange = (page : number) =>{
+    setParams((params) => {
+      params.pageNumber = page;
+      return params;
+    });
+    refetch();
+  }
+
   const rowSelection = {
     onChange: (_selectedRowKeys: React.Key[], selectedRows: User[]) => {
       setSelectedUser(selectedRows[0]);
@@ -150,6 +160,8 @@ function ModalSelectUser({
       return params;
     });
   };
+
+  
 
   const handleSave = () => {
     handleCancel();
@@ -203,6 +215,9 @@ function ModalSelectUser({
         <div className="my-4 flex justify-end">
           <CustomPagination
             totalItems={queryData?.data.result.total}
+            pageSize={PAGE_SIZE}
+            handleChange={handlePageChange}
+            currentPageNumber={params.pageNumber}
           ></CustomPagination>
         </div>
       </Modal>
