@@ -40,7 +40,7 @@ function ManageAssignmentPage() {
     useState<boolean>(false);
   const [idToDelete, setIdToDelete] = useState<number>(0);
 
-  const { assignment } = location.state || {};
+  const [newAssignment, setNewAssignment] = useState<AssignmentResponse>();
 
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
 
@@ -90,19 +90,27 @@ function ManageAssignmentPage() {
 
     if (isSuccess) {
       let temp = [...queryData.data.result.data];
-      if (assignment) {
-        const newAssignment = { ...assignment, isNew: true };
-        temp = temp.filter((item) => item.id !== assignment.id);
+      if (newAssignment) {
+        const assignmentWithNew = { ...newAssignment, isNew: true };
+        temp = temp.filter((item) => item.id !== newAssignment.id);
 
-        temp = [newAssignment, ...temp];
+        temp = [assignmentWithNew, ...temp];
         while (temp.length > 20) {
           temp.pop();
         }
+        setNewAssignment(undefined);
       }
       window.history.replaceState({}, "");
       setItems(temp);
     }
   }, [error, isError, isSuccess, queryData]);
+
+  useEffect(() => {
+    if (location.state?.assignment) {
+      const assignment = location.state.assignment as AssignmentResponse;
+      setNewAssignment(assignment);
+    }
+  }, []);
 
   useEffect(() => {
     if (isDeleteSuccess) {
@@ -172,20 +180,43 @@ function ManageAssignmentPage() {
       dataIndex: "action",
       render: (_, record) => (
         <div className="flex space-x-5">
-          <EditOutlined
+          <button
+            disabled={!(record.state == "WAITING")}
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/admin/assignments/edit-assignment/${record.id}`);
             }}
-          />
-          <CloseCircleOutlined
-            style={{ color: "red" }}
+            className={
+              !(record.state == "WAITING")
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <EditOutlined
+              data-testid="edit-assignment"
+              style={{ color: !(record.state == "WAITING") ? "gray" : "black" }}
+            />
+          </button>
+
+          <button
+            disabled={record.state == "ACCEPTED"}
             onClick={(e) => {
               e.stopPropagation();
               setIdToDelete(record.id);
               setIsOpenDeleteAssignmentModal(true);
             }}
-          />
+            className={
+              record.state == "ACCEPTED"
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <CloseCircleOutlined
+              data-testid="delete-assignment"
+              style={{ color: record.state == "ACCEPTED" ? "black" : "red" }}
+            />
+          </button>
+
           <ReloadOutlined style={{ color: "blue" }} />
 
           {record.isNew && <Badge count={"New"} />}
@@ -268,7 +299,6 @@ function ManageAssignmentPage() {
             return {
               onClick: (e) => {
                 e.stopPropagation();
-                console.log(index);
                 setAssignmentData(items[index || 0]);
                 setShowDetailModal(true);
               },

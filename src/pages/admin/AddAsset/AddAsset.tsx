@@ -20,7 +20,7 @@ interface FormValues {
   name?: string;
   category?: string;
   specification?: string;
-  installedDate?: string;
+  installDate?: string;
   state: "available" | "not_available";
 }
 
@@ -55,11 +55,8 @@ function AddAsset() {
   }, [isError, isSuccess]);
 
   const onFinish = (values: FormValues) => {
-    let body = {
-      ...values,
-      installDate: dayjs(values.installedDate).format("YYYY-MM-DD"),
-    };
-    mutate(body);
+    values.installDate = dayjs(values.installDate).format("YYYY-MM-DD");
+    mutate(values);
   };
 
   const handleCancel = () => {

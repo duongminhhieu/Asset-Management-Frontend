@@ -15,7 +15,6 @@ import {
 import { SorterResult } from "antd/es/table/interface";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
 
 function ModalSelectAsset({
   isOpen,
@@ -28,18 +27,16 @@ function ModalSelectAsset({
 }) {
   // state
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedAsset, setSelectedAsset] = useState<AssetResponse>();
-
-  const params: AssetSearchParams = {
-    searchString: searchParams.get("search") || "",
+  const [params, setParams] = useState<AssetSearchParams>({
+    searchString: "",
     states: "AVAILABLE",
-    categoryIds: searchParams.get("category") || "",
-    orderBy: searchParams.get("orderBy") || undefined,
-    sortDir: searchParams.get("sortDir") || undefined,
-    pageNumber: Number(searchParams.get("page") || "1"),
-    pageSize: Number("20"),
-  };
+    categoryIds: "",
+    orderBy: undefined,
+    sortDir: undefined,
+    pageNumber: 1,
+    pageSize: 20,
+  });
 
   // query
   const {
@@ -47,8 +44,11 @@ function ModalSelectAsset({
     isError,
     isLoading,
     error,
-  } = useQuery(["getAllAssets", { params }], () =>
-    AssetAPICaller.getSearchAssets(params)
+    refetch,
+  } = useQuery(
+    ["getAllAssets", { params }],
+    () => AssetAPICaller.getSearchAssets(params),
+    { enabled: isOpen }
   );
 
   // effect
@@ -62,7 +62,12 @@ function ModalSelectAsset({
 
   // handlers
   const onSearch = (value: string) => {
-    setSearchParams({ search: value });
+    setParams((params) => {
+      params.searchString = value;
+      params.pageNumber = 1;
+      return params;
+    });
+    refetch();
   };
 
   const handleTableChange: TableProps<AssetResponse>["onChange"] = (
@@ -74,30 +79,13 @@ function ModalSelectAsset({
     const { field, order } = sorter;
 
     const fieldString = field as string;
-    setSearchParams((searchParams) => {
-      searchParams.set("orderBy", fieldString);
-
-      return searchParams;
+    setParams((params) => {
+      params.orderBy = fieldString;
+      params.sortDir = order === "ascend" ? "asc" : "desc";
+      return params;
     });
-    if (order === "ascend") {
-      setSearchParams((searchParams) => {
-        searchParams.set("sortDir", "asc");
 
-        return searchParams;
-      });
-    } else if (order === "descend") {
-      setSearchParams((searchParams) => {
-        searchParams.set("sortDir", "desc");
-
-        return searchParams;
-      });
-    } else
-      setSearchParams((searchParams) => {
-        searchParams.delete("sortDir");
-        searchParams.delete("orderBy");
-
-        return searchParams;
-      });
+    refetch();
   };
 
   const columns: TableColumnsType<AssetResponse> = [
@@ -140,15 +128,14 @@ function ModalSelectAsset({
   const handleCancel = () => {
     setIsButtonDisabled(true);
     setIsOpenModal(false);
-    setSearchParams((searchParams) => {
-      searchParams.delete("search");
-      searchParams.delete("type");
-      searchParams.delete("orderBy");
-      searchParams.delete("sortDir");
-      searchParams.delete("page");
-      searchParams.delete("pageSize");
-
-      return searchParams;
+    setParams({
+      searchString: "",
+      states: "AVAILABLE",
+      categoryIds: "",
+      orderBy: undefined,
+      sortDir: undefined,
+      pageNumber: 1,
+      pageSize: 20,
     });
   };
 
