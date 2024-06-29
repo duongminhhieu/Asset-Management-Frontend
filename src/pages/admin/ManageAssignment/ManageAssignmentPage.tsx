@@ -40,7 +40,7 @@ function ManageAssignmentPage() {
     useState<boolean>(false);
   const [idToDelete, setIdToDelete] = useState<number>(0);
 
-  const { assignment } = location.state || {};
+  const [newAssignment, setNewAssignment] = useState<AssignmentResponse>();
 
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
 
@@ -90,19 +90,27 @@ function ManageAssignmentPage() {
 
     if (isSuccess) {
       let temp = [...queryData.data.result.data];
-      if (assignment) {
-        const newAssignment = { ...assignment, isNew: true };
-        temp = temp.filter((item) => item.id !== assignment.id);
+      if (newAssignment) {
+        const assignmentWithNew = { ...newAssignment, isNew: true };
+        temp = temp.filter((item) => item.id !== newAssignment.id);
 
-        temp = [newAssignment, ...temp];
+        temp = [assignmentWithNew, ...temp];
         while (temp.length > 20) {
           temp.pop();
         }
+        setNewAssignment(undefined);
       }
       window.history.replaceState({}, "");
       setItems(temp);
     }
   }, [error, isError, isSuccess, queryData]);
+
+  useEffect(() => {
+    if (location.state?.assignment) {
+      const assignment = location.state.assignment as AssignmentResponse;
+      setNewAssignment(assignment);
+    }
+  }, []);
 
   useEffect(() => {
     if (isDeleteSuccess) {
