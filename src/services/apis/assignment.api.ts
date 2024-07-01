@@ -13,30 +13,39 @@ export class AssignmentAPICaller {
     return instance.post(APIConstants.ASSIGNMENT.CREATE_ASSIGNMENT, body);
   };
 
-    static getAssignment = (assignmentId: number) => {
-        return instance.get(APIConstants.ASSIGNMENT.GET_ASSIGNMENT(assignmentId));
-    }
+  static getAssignment = (assignmentId: number) => {
+    return instance.get(APIConstants.ASSIGNMENT.GET_ASSIGNMENT(assignmentId));
+  };
 
-    static updateAssignment = ({ assignmentId, body = {} }: { assignmentId: number, body?: any }) => {
-        return instance.put(APIConstants.ASSIGNMENT.UPDATE_ASSIGNMENT(assignmentId), body);
-    }
+  static updateAssignment = ({
+    assignmentId,
+    body = {},
+  }: {
+    assignmentId: number;
+    body?: any;
+  }) => {
+    return instance.put(
+      APIConstants.ASSIGNMENT.UPDATE_ASSIGNMENT(assignmentId),
+      body
+    );
+  };
 
   static getSearchAssignments = (assetSearchParams: AssignmentSearchParams) => {
     return instance.get(APIConstants.ASSIGNMENT.GET_ASSIGNMENTS, {
       params: assetSearchParams,
     });
   };
-    static deleteAssignment = (id: number) => {
-        return instance.delete(APIConstants.ASSIGNMENT.DELETE_ASSIGNMENT(id));
-    };
+  static deleteAssignment = (id: number) => {
+    return instance.delete(APIConstants.ASSIGNMENT.DELETE_ASSIGNMENT(id));
+  };
   static getMyAssignments = (assignmentParams: AssignmentParams) => {
     return instance.get(APIConstants.ASSIGNMENT.GET_MY_ASSIGNMENTS, {
       params: assignmentParams,
     });
   };
   static changeState = (id: number, param: AssignmentState) => {
-    return instance.get(APIConstants.ASSIGNMENT.CHANGE_STATE(id), {
-      params: param,
+    return instance.patch(APIConstants.ASSIGNMENT.CHANGE_STATE(id), null, {
+      params: { state: param },
     });
   };
 }

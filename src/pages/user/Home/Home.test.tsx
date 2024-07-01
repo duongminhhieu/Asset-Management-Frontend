@@ -64,6 +64,7 @@ jest.mock("@/services/apis/assignment.api", () => ({
       },
     }),
   },
+  changeState: jest.fn().mockResolvedValue({}),
 }));
 
 jest.mock("@/services/apis/asset.api", () => ({
@@ -131,10 +132,42 @@ describe("Home", () => {
     expect(screen.getByText("My Assignment")).toBeInTheDocument();
   });
 
+  test("clicking Accept button opens confirmation modal", async () => {
+    renderWithClient();
+
+    await waitFor(() => {
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: /accepted/i,
+        })
+      );
+    });
+  });
   test("sorting functionality updates search parameters correctly", async () => {
     renderWithClient();
     const assetCodeHeader = screen.getByText("Asset Code");
     fireEvent.click(assetCodeHeader);
-    await waitFor(() => expect(screen.getByText("A-001")).toBeInTheDocument());
+
+    await waitFor(() => {
+      expect(screen.getByText("A-001")).toBeInTheDocument();
+      expect(global.window.location.search).toContain("orderBy=assetCode");
+      expect(global.window.location.search).toContain("sortDir=asc");
+    });
+
+    fireEvent.click(assetCodeHeader);
+
+    await waitFor(() => {
+      expect(global.window.location.search).toContain("orderBy=assetCode");
+      expect(global.window.location.search).toContain("sortDir=desc");
+    });
+
+    fireEvent.click(assetCodeHeader);
+
+    await waitFor(() => {
+      expect(global.window.location.search).not.toContain("orderBy=assetCode");
+      expect(global.window.location.search).not.toContain("sortDir=asc");
+      expect(global.window.location.search).not.toContain("sortDir=desc");
+    });
   });
+
 });
