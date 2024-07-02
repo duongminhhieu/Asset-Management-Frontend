@@ -7,6 +7,7 @@ function ConfirmationModal({
   title,
   message,
   buttontext,
+  buttonCancelText,
   onConfirm,
   onCancel,
 }: {
@@ -14,6 +15,7 @@ function ConfirmationModal({
   title: React.ReactNode;
   message: React.ReactNode;
   buttontext: string;
+  buttonCancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }) {
@@ -23,7 +25,7 @@ function ConfirmationModal({
         title={title}
         open={isOpen}
         okText={buttontext}
-        cancelText="Cancel"
+        cancelText={buttonCancelText || "Cancel"}
         onOk={onConfirm}
         onCancel={onCancel}
         okButtonProps={{

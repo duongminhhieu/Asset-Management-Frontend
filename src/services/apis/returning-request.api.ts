@@ -8,7 +8,12 @@ export class ReturningRequestAPICaller {
       params: returningRequestSearchParams,
     });
   };
+
   static cancelReturningRequest = (id: number) => {
     return instance.delete(APIConstants.RETURNING_REQUEST.CANCEL_RETURNING_REQUEST(id));
+  };
+
+  static completeReturningRequest = (id: number) => {
+    return instance.patch(APIConstants.RETURNING_REQUEST.COMPLETE_RETURNING_REQUEST(id));
   };
 }
