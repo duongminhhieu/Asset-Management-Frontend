@@ -11,6 +11,7 @@ import CreateUser from "./pages/admin/CreateUser/CreateUser";
 import CreateAssignment from "./pages/admin/CreateAssignment/CreateAssignment";
 import EditAssignment from "./pages/admin/EditAssignment/EditAssignment";
 import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmentPage";
+import ManageReturningRequestPage from "./pages/admin/ManageReturningRequest/ManageReturningRequest";
 
 function App() {
   return (
@@ -99,6 +100,15 @@ function App() {
           element={
             <AdminRoute>
               <CreateUser />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/returning-requests"
+          element={
+            <AdminRoute>
+              <ManageReturningRequestPage />
             </AdminRoute>
           }
         />

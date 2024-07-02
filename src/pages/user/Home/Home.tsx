@@ -18,6 +18,7 @@ import { AssignmentResponse } from "@/types/AssignmentResponse";
 import AssignmentDetailsModal from "./components/AssignmentDetailsModal";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 import { AssignmentState } from "@/enums/AssignmentState.enum";
+import { ReturningRequestAPICaller } from "@/services/apis/returning-request.api";
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,6 +29,8 @@ function Home() {
   const [confirmAction, setConfirmAction] = useState<null | (() => void)>(null);
   const [modalMessage, setModalMessage] = useState<string>("");
   const [modalButtonText, setModalButtonText] = useState<string>("");
+  const [modalCancelButtonText, setmodalCancelButtonText] =
+    useState<string>("");
 
   const params: AssignmentParams = {
     orderBy: searchParams.get("orderBy") || undefined,
@@ -82,6 +85,7 @@ function Home() {
     },
     state: "",
     returnDate: null,
+    returningRequestId: null,
   };
 
   const handleAcceptAssignment = (assignmentId: number) => {
@@ -102,7 +106,18 @@ function Home() {
         refetch();
       })
       .catch((error) => {
-        message.error("Failed to accept assignment: " + error.message);
+        message.error("Failed to decline assignment: " + error.message);
+      });
+  };
+
+  const handleReturningRequest = (assignmentId: number) => {
+    ReturningRequestAPICaller.createReturningRequestAtHomePage(assignmentId)
+      .then(() => {
+        setOpenConfirmationModal(false);
+        refetch();
+      })
+      .catch((error) => {
+        message.error("Failed to request return assignment: " + error.message);
       });
   };
 
@@ -153,47 +168,88 @@ function Home() {
       dataIndex: "action",
       render: (_, record) => (
         <div className="flex space-x-5" data-testId="action">
-          {record.state === "WAITING" ? (
-            <>
-              <button aria-label="accepted">
-                <CheckOutlined
-                  aria-label="accepted"
-                  style={{ color: "red" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setModalMessage("Do you want to accept this assignment?");
-                    setModalButtonText("Accept");
-                    setOpenConfirmationModal(true);
-                    setConfirmAction(
-                      () => () => handleAcceptAssignment(record.id)
-                    );
-                  }}
-                />
-              </button>
-              <button aria-label="declined">
-                <CloseOutlined
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setModalMessage("Do you want to decline this assignment?");
-                    setModalButtonText("Decline");
-                    setOpenConfirmationModal(true);
-                    setConfirmAction(
-                      () => () => handleDeclineAssignment(record.id)
-                    );
-                  }}
-                />
-              </button>
-            </>
-          ) : (
-            <>
-              <CheckOutlined style={{ color: "gray" }} disabled />
-              <CloseOutlined style={{ color: "gray" }} disabled />
-            </>
-          )}
-          <ReloadOutlined
-            style={{ color: "blue" }}
-            onClick={(e) => e.stopPropagation()}
-          />
+          <button
+            aria-label="accepted"
+            disabled={record.state !== "WAITING"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setModalMessage("Do you want to accept this assignment?");
+              setModalButtonText("Accept");
+              setmodalCancelButtonText("Cancel");
+              setOpenConfirmationModal(true);
+              setConfirmAction(() => () => handleAcceptAssignment(record.id));
+            }}
+            className={
+              record.state !== "WAITING"
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <CheckOutlined
+              style={{
+                color: record.state == "WAITING" ? "red" : "pink",
+              }}
+            />
+          </button>
+          <button
+            aria-label="declined"
+            disabled={record.state !== "WAITING"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setModalMessage("Do you want to decline this assignment?");
+              setModalButtonText("Decline");
+              setmodalCancelButtonText("Cancel");
+              setOpenConfirmationModal(true);
+              setConfirmAction(() => () => handleDeclineAssignment(record.id));
+            }}
+            className={
+              record.state !== "WAITING"
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <CloseOutlined
+              style={{
+                color: record.state == "WAITING" ? "black" : "gray",
+              }}
+            />
+          </button>
+          <button
+            aria-label="returning-request"
+            disabled={
+              record.state !== "ACCEPTED" || record.returningRequestId != null
+            }
+            onClick={(e) => {
+              if (
+                record.state === "ACCEPTED" &&
+                record.returningRequestId == null
+              ) {
+                e.stopPropagation();
+                setModalMessage(
+                  "Do you want to create a returning request for this asset?"
+                );
+                setModalButtonText("Yes");
+                setmodalCancelButtonText("No");
+                setOpenConfirmationModal(true);
+                setConfirmAction(() => () => handleReturningRequest(record.id));
+              }
+            }}
+            className={
+              record.state !== "ACCEPTED" || record.returningRequestId != null
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <ReloadOutlined
+              style={{
+                color:
+                  record.state !== "ACCEPTED" ||
+                  record.returningRequestId != null
+                    ? "rgba(0, 0, 255, 0.5)"
+                    : "blue",
+              }}
+            />
+          </button>
         </div>
       ),
       key: "action",
@@ -281,6 +337,7 @@ function Home() {
         message={<p>{modalMessage}</p>}
         onCancel={() => setOpenConfirmationModal(false)}
         buttontext={modalButtonText}
+        buttonCancelText={modalCancelButtonText}
         onConfirm={confirmAction || (() => {})}
       />
     </div>

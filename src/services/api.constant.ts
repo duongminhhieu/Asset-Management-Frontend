@@ -39,4 +39,11 @@ export class APIConstants {
     GET_MY_ASSIGNMENTS: "/assignments/me",
     CHANGE_STATE: (id: number) => `/assignments/${id}`,
   };
+
+  static RETURNING_REQUEST = {
+    GET_RETURNING_REQUESTS: "/returning-requests",
+    CANCEL_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}`,
+    COMPLETE_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}/complete`,
+    CREATE_RETURNING_REQUEST_HOME_PAGE: (id: number) => `/returning-requests/${id}`,
+  };
 }
