@@ -10,23 +10,24 @@ describe("Test custom pagination", () =>{
     component = render(
       <BrowserRouter>
         <CustomPagination totalItems={100}/>
+        <CustomPagination totalItems={100} pageSize={10} handleChange={()=>{}} currentPageNumber={1}/>
       </BrowserRouter>
     );
   });
 
   test("Pagination render", () =>{
-    expect(component.getByText("Next")).toBeInTheDocument();
-    expect(component.getByText("Previous")).toBeInTheDocument();
+    expect(component.getAllByText("Next")[0]).toBeInTheDocument();
+    expect(component.getAllByText("Previous")[0]).toBeInTheDocument();
     pageNumber.forEach((num)=>{
-        expect(component.getByText(String(num))).toBeInTheDocument();
+        expect(component.getAllByText(String(num))[0]).toBeInTheDocument();
     })
   })
 
   test("Clicks", ()=>{
-    const prev = component.getByText("Previous");
-    const next = component.getByText("Next");
+    const prev = component.getAllByText("Previous")[0];
+    const next = component.getAllByText("Next")[0];
 
-    const page_two = component.getByText("2");
+    const page_two = component.getAllByText("2")[0];
     fireEvent.click(next);
 
     expect(prev).toBeEnabled();

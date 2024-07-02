@@ -16,12 +16,18 @@ import APIResponse from "@/types/APIResponse";
 import { SorterResult } from "antd/es/table/interface";
 import { AssignmentResponse } from "@/types/AssignmentResponse";
 import AssignmentDetailsModal from "./components/AssignmentDetailsModal";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import { AssignmentState } from "@/enums/AssignmentState.enum";
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [assignmentData, setAssignmentData] = useState<AssignmentResponse>();
   const [items, setItems] = useState<AssignmentResponse[]>([]);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<null | (() => void)>(null);
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const [modalButtonText, setModalButtonText] = useState<string>("");
 
   const params: AssignmentParams = {
     orderBy: searchParams.get("orderBy") || undefined,
@@ -36,11 +42,10 @@ function Home() {
     isError,
     isLoading,
     error,
+    refetch,
   } = useQuery(["getAllAssignments", { params }], () =>
     AssignmentAPICaller.getMyAssignments(params)
   );
-
-  // Handle accept assignment
 
   useEffect(() => {
     if (isError) {
@@ -77,6 +82,28 @@ function Home() {
     },
     state: "",
     returnDate: null,
+  };
+
+  const handleAcceptAssignment = (assignmentId: number) => {
+    AssignmentAPICaller.changeState(assignmentId, AssignmentState.ACCEPTED)
+      .then(() => {
+        setOpenConfirmationModal(false);
+        refetch();
+      })
+      .catch((error) => {
+        message.error("Failed to accept assignment: " + error.message);
+      });
+  };
+
+  const handleDeclineAssignment = (assignmentId: number) => {
+    AssignmentAPICaller.changeState(assignmentId, AssignmentState.DECLINED)
+      .then(() => {
+        setOpenConfirmationModal(false);
+        refetch();
+      })
+      .catch((error) => {
+        message.error("Failed to accept assignment: " + error.message);
+      });
   };
 
   const columns: TableColumnsType<AssignmentResponse> = [
@@ -124,24 +151,48 @@ function Home() {
     {
       title: "",
       dataIndex: "action",
-      render: () => (
-        <div className="flex space-x-5">
-          <CheckOutlined
-            style={{ color: "red" }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
-          <CloseOutlined
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
+      render: (_, record) => (
+        <div className="flex space-x-5" data-testId="action">
+          {record.state === "WAITING" ? (
+            <>
+              <button aria-label="accepted">
+                <CheckOutlined
+                  aria-label="accepted"
+                  style={{ color: "red" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalMessage("Do you want to accept this assignment?");
+                    setModalButtonText("Accept");
+                    setOpenConfirmationModal(true);
+                    setConfirmAction(
+                      () => () => handleAcceptAssignment(record.id)
+                    );
+                  }}
+                />
+              </button>
+              <button aria-label="declined">
+                <CloseOutlined
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalMessage("Do you want to decline this assignment?");
+                    setModalButtonText("Decline");
+                    setOpenConfirmationModal(true);
+                    setConfirmAction(
+                      () => () => handleDeclineAssignment(record.id)
+                    );
+                  }}
+                />
+              </button>
+            </>
+          ) : (
+            <>
+              <CheckOutlined style={{ color: "gray" }} disabled />
+              <CloseOutlined style={{ color: "gray" }} disabled />
+            </>
+          )}
           <ReloadOutlined
             style={{ color: "blue" }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       ),
@@ -223,6 +274,14 @@ function Home() {
         handleClose={() => {
           setShowModal(false);
         }}
+      />
+      <ConfirmationModal
+        isOpen={openConfirmationModal}
+        title={<p className="text-[#e9424d]">Are you sure?</p>}
+        message={<p>{modalMessage}</p>}
+        onCancel={() => setOpenConfirmationModal(false)}
+        buttontext={modalButtonText}
+        onConfirm={confirmAction || (() => {})}
       />
     </div>
   );
