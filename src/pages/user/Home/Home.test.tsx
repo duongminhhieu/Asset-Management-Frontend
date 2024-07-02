@@ -137,12 +137,37 @@ describe("Home", () => {
 
     await waitFor(() => {
       fireEvent.click(
-        screen.getByRole("button", {
+        screen.getAllByRole("button", {
           name: /accepted/i,
-        })
+        })[0]
       );
     });
   });
+
+  test("clicking Decline button opens confirmation modal", async () => {
+    renderWithClient();
+
+    await waitFor(() => {
+      fireEvent.click(
+        screen.getAllByRole("button", {
+          name: /declined/i,
+        })[0]
+      );
+    });
+  });
+
+  test("clicking Returning Request button opens confirmation modal", async () => {
+    renderWithClient();
+
+    await waitFor(() => {
+      fireEvent.click(
+        screen.getAllByRole("button", {
+          name: /returning-request/i,
+        })[1]
+      );
+    });
+  });
+
   test("sorting functionality updates search parameters correctly", async () => {
     renderWithClient();
     const assetCodeHeader = screen.getByText("Asset Code");
@@ -167,6 +192,20 @@ describe("Home", () => {
       expect(global.window.location.search).not.toContain("orderBy=assetCode");
       expect(global.window.location.search).not.toContain("sortDir=asc");
       expect(global.window.location.search).not.toContain("sortDir=desc");
+    });
+  });
+
+  test('opens the assignment details modal on row click', async () => {
+    renderWithClient();
+
+    await waitFor(() => {
+      expect(screen.getByText('Laptop')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Laptop'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Detailed Assignment Information')).toBeInTheDocument();
     });
   });
 

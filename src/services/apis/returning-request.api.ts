@@ -16,4 +16,7 @@ export class ReturningRequestAPICaller {
   static completeReturningRequest = (id: number) => {
     return instance.patch(APIConstants.RETURNING_REQUEST.COMPLETE_RETURNING_REQUEST(id));
   };
+  static createReturningRequestAtHomePage = (id: number) => {
+    return instance.post(APIConstants.RETURNING_REQUEST.CREATE_RETURNING_REQUEST_HOME_PAGE(id));
+  }
 }

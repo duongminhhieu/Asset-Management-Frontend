@@ -10,4 +10,5 @@ export type AssignmentResponse = {
     returnDate: Date | null,
     state: string
     isNew?: boolean
+    returningRequestId?: number | null;
 }

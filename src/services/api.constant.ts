@@ -44,5 +44,6 @@ export class APIConstants {
     GET_RETURNING_REQUESTS: "/returning-requests",
     CANCEL_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}`,
     COMPLETE_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}/complete`,
-  }
+    CREATE_RETURNING_REQUEST_HOME_PAGE: (id: number) => `/returning-requests/${id}`,
+  };
 }
