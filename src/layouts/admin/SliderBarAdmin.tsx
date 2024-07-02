@@ -23,7 +23,7 @@ const items = [
     label: "Manage Assignment",
   },
   {
-    key: "requestforreturn",
+    key: "returning-requests",
     label: "Request For Returning",
   },
   {
@@ -48,6 +48,9 @@ function SliderBarAdmin() {
         break;
       case "assignments":
         navigate("/admin/assignments");
+        break;
+      case "returning-requests":
+        navigate("/admin/returning-requests");
         break;
       default:
         break;
