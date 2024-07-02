@@ -11,10 +11,16 @@ import { Badge, Table, TableColumnsType, TableProps, message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { Assignment } from "@/types/Assignment";
 import { User } from "@/types/User";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+
+const displayState = {
+  COMPLETED: "Completed",
+  WAITING_FOR_RETURNING: "Waiting for returning",
+};
 
 function ManageReturningRequestPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,6 +29,8 @@ function ManageReturningRequestPage() {
     setSearchParams({ search: value });
   };
   const location = useLocation();
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
+  const [idToDelete, setIdToDelete] = useState<number>(0);
 
   const [newReturningRequest, setNewReturningRequest] =
     useState<ReturningRequest>();
@@ -43,14 +51,30 @@ function ManageReturningRequestPage() {
     isError,
     isLoading,
     error,
+    refetch,
   } = useQuery(["getAllReturningRequest", { params }], () =>
     ReturningRequestAPICaller.getSearchReturningRequests(params)
   );
 
-  const displayState = {
-    COMPLETED: "Completed",
-    WAITING_FOR_RETURNING: "Waiting for returning",
-  };
+  const {
+    mutate,
+    isSuccess: isDeleteSuccess,
+    isError: isDeleteError,
+    error: errorDelete,
+  } = useMutation(ReturningRequestAPICaller.cancelReturningRequest);
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      message.success("Returning request has been deleted successfully!");
+      refetch();
+      setIsOpenDeleteModal(false);
+    }
+    if (isDeleteError) {
+      const errorResponse = (errorDelete as { response: { data: APIResponse } })
+        .response?.data;
+      message.error(errorResponse?.message);
+    }
+  }, [isDeleteSuccess, isDeleteError]);
 
   useEffect(() => {
     if (isError) {
@@ -172,6 +196,8 @@ function ManageReturningRequestPage() {
             disabled={record.state == "COMPLETED"}
             onClick={(e) => {
               e.stopPropagation();
+              setIdToDelete(record.id);
+              setIsOpenDeleteModal(true);
             }}
             className={
               record.state == "COMPLETED"
@@ -262,6 +288,18 @@ function ManageReturningRequestPage() {
           totalItems={queryData?.data.result.total}
         ></CustomPagination>
       </div>
+      <ConfirmationModal
+        isOpen={isOpenDeleteModal}
+        title={<div className="text-[#cf2338]">Are you sure ?</div>}
+        message="Do you want to cancel this returning request?"
+        buttontext="Delete"
+        onConfirm={() => {
+          mutate(idToDelete);
+        }}
+        onCancel={() => {
+          setIsOpenDeleteModal(false);
+        }}
+      />
     </div>
   );
 }

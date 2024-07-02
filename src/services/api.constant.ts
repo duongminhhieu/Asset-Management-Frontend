@@ -41,6 +41,7 @@ export class APIConstants {
   };
 
   static RETURNING_REQUEST = {
-    GET_RETURNING_REQUESTS: "/returning-requests"
+    GET_RETURNING_REQUESTS: "/returning-requests",
+    CANCEL_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}`,
   }
 }
