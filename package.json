@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "coverage": "npm test -- --coverage --watchAll --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**'",
-    "coverage:ci": "npm test -- --coverage --watchAll=false --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**'",
+    "coverage:ci": "npm test --ci --coverage --watchAll=false --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**'",
     "test": "jest",
     "dev": "vite",
     "build": "tsc && vite build",
@@ -41,6 +41,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "jest-junit": "^16.0.0",
     "jest-transformer-svg": "^2.0.2",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
