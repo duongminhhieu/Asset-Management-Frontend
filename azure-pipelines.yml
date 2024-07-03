@@ -36,7 +36,7 @@ steps:
       npm install
       npm audit fix
       npm run build
-      npm run coverage
+      npm run coverage:ci
     displayName: "Clean install, build, test and coverage"
 
   - task: PublishTestResults@2
