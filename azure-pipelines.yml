@@ -5,13 +5,24 @@
 
 trigger:
   - main
+  - ci-cd
 pr:
   branches:
     include:
       - main
+      - ci-cd
 
 pool:
   vmImage: ubuntu-latest
+
+variables:
+  # Container registry service connection established during pipeline creation
+  imageName: "asset-frontend"
+  registryName: "duongminhhieu008"
+  appName: "rookies71"
+  dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
+  tag: "$(Build.BuildId)"
+  containerRegistry: "asset-docker"
 
 steps:
   - task: NodeTool@0
@@ -25,4 +36,30 @@ steps:
       npm install
       npm audit fix
       npm run build
-    displayName: "Clean install and build"
+      npm run coverage
+    displayName: "Clean install, build, test and coverage"
+
+  - task: PublishTestResults@2
+    displayName: "Publish test results"
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/test-report.xml"
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: "Cobertura"
+      summaryFileLocation: "$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml"
+      pathToSources: "$(Build.SourcesDirectory)"
+      failIfCoverageEmpty: true
+
+  - task: Docker@2
+    displayName: "Build and push an image to container registry"
+    inputs:
+      command: buildAndPush
+      repository: $(registryName)/$(imageName)
+      dockerfile: $(dockerfilePath)
+      containerRegistry: $(containerRegistry)
+      tags: |
+        $(tag)
