@@ -11,6 +11,8 @@ export class APIConstants {
     GENERATE_USERNAME: "/users/generate-username",
     FIRST_CHANGE_PASSWORD: `/users/first-change-password`,
     CHANGE_PASSWORD: `/users/change-password`,
+    DELETE_USER: (id:number) => `/users/${id}`,
+    VALID_ASSIGNMENT: (id:number)=> `/users/${id}/has-assignments`
   };
 
   static LOCATION = {
@@ -45,5 +47,6 @@ export class APIConstants {
     CANCEL_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}`,
     COMPLETE_RETURNING_REQUEST: (id: number) => `/returning-requests/${id}/complete`,
     CREATE_RETURNING_REQUEST_HOME_PAGE: (id: number) => `/returning-requests/${id}`,
+    CREATE_RETURNING_REQUEST_ADMIN_PAGE: (id: number) => `/returning-requests/demand/${id}`,
   };
 }

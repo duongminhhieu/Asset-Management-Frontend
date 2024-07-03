@@ -27,10 +27,17 @@ import { useMutation, useQuery } from "react-query";
 import AssignmenDetailsModal from "./components/AssignmentDetailsModal";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import { ReturningRequestAPICaller } from "@/services/apis/returning-request.api";
 
 function ManageAssignmentPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState<AssignmentResponse[]>([]);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<null | (() => void)>(null);
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const [modalButtonText, setModalButtonText] = useState<string>("");
+  const [modalCancelButtonText, setmodalCancelButtonText] =
+    useState<string>("");
   const navigate = useNavigate();
   const onSearch = (value: string) => {
     setSearchParams({ search: value });
@@ -125,6 +132,17 @@ function ManageAssignmentPage() {
     }
   }, [isDeleteSuccess, isDeleteError]);
 
+  const handleReturningRequest = (assignmentId: number) => {
+    ReturningRequestAPICaller.adminCreateReturningRequest(assignmentId)
+      .then(() => {
+        setOpenConfirmationModal(false);
+        refetch();
+      })
+      .catch((error) => {
+        message.error("Failed to request return assignment: " + error.message);
+      });
+  };
+
   const columns: TableColumnsType<AssignmentResponse> = [
     {
       title: "No.",
@@ -217,7 +235,42 @@ function ManageAssignmentPage() {
             />
           </button>
 
-          <ReloadOutlined style={{ color: "blue" }} />
+          <button
+            aria-label="returning-request"
+            disabled={
+              record.state !== "ACCEPTED" || record.returningRequestId != null
+            }
+            onClick={(e) => {
+              if (
+                record.state === "ACCEPTED" &&
+                record.returningRequestId == null
+              ) {
+                e.stopPropagation();
+                setModalMessage(
+                  "Do you want to create a returning request for this asset?"
+                );
+                setModalButtonText("Yes");
+                setmodalCancelButtonText("No");
+                setOpenConfirmationModal(true);
+                setConfirmAction(() => () => handleReturningRequest(record.id));
+              }
+            }}
+            className={
+              record.state !== "ACCEPTED" || record.returningRequestId != null
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <ReloadOutlined
+              style={{
+                color:
+                  record.state !== "ACCEPTED" ||
+                  record.returningRequestId != null
+                    ? "rgba(0, 0, 255, 0.5)"
+                    : "blue",
+              }}
+            />
+          </button>
 
           {record.isNew && <Badge count={"New"} />}
         </div>
@@ -328,6 +381,16 @@ function ManageAssignmentPage() {
         onCancel={() => {
           setIsOpenDeleteAssignmentModal(false);
         }}
+      />
+
+      <ConfirmationModal
+        isOpen={openConfirmationModal}
+        title={<p className="text-[#e9424d]">Are you sure?</p>}
+        message={<p>{modalMessage}</p>}
+        onCancel={() => setOpenConfirmationModal(false)}
+        buttontext={modalButtonText}
+        buttonCancelText={modalCancelButtonText}
+        onConfirm={confirmAction || (() => {})}
       />
     </div>
   );

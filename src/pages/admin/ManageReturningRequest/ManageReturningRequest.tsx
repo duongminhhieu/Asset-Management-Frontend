@@ -31,6 +31,8 @@ function ManageReturningRequestPage() {
   const location = useLocation();
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
   const [idToDelete, setIdToDelete] = useState<number>(0);
+  const [isCompleteModal, setIsCompleteModal] = useState<boolean>(false);
+  const [idToComplete, setIdToComplete] = useState<number>(0);
 
   const [newReturningRequest, setNewReturningRequest] =
     useState<ReturningRequest>();
@@ -62,6 +64,27 @@ function ManageReturningRequestPage() {
     isError: isDeleteError,
     error: errorDelete,
   } = useMutation(ReturningRequestAPICaller.cancelReturningRequest);
+
+  const {
+    mutate: completeReturningRequest,
+    isSuccess: isCompleteSuccess,
+    isError: isCompleteError,
+    error: errorComplete,
+  } = useMutation(ReturningRequestAPICaller.completeReturningRequest);
+
+  useEffect(() => {
+    if (isCompleteSuccess) {
+      message.success("Returning request has been completed successfully!");
+      refetch();
+      setIsCompleteModal(false);
+    }
+    if (isCompleteError) {
+      const errorResponse = (
+        errorComplete as { response: { data: APIResponse } }
+      ).response?.data;
+      message.error(errorResponse?.message);
+    }
+  }, [isCompleteSuccess, isCompleteError]);
 
   useEffect(() => {
     if (isDeleteSuccess) {
@@ -177,6 +200,8 @@ function ManageReturningRequestPage() {
             disabled={record.state == "COMPLETED"}
             onClick={(e) => {
               e.stopPropagation();
+              setIdToComplete(record.id);
+              setIsCompleteModal(true);
             }}
             className={
               record.state == "COMPLETED"
@@ -292,12 +317,27 @@ function ManageReturningRequestPage() {
         isOpen={isOpenDeleteModal}
         title={<div className="text-[#cf2338]">Are you sure ?</div>}
         message="Do you want to cancel this returning request?"
-        buttontext="Delete"
+        buttontext="Yes"
+        buttonCancelText="No"
         onConfirm={() => {
           mutate(idToDelete);
         }}
         onCancel={() => {
           setIsOpenDeleteModal(false);
+        }}
+      />
+
+      <ConfirmationModal
+        isOpen={isCompleteModal}
+        title={<div className="text-[#cf2338]">Are you sure ?</div>}
+        message="Do you want to mark this returning request as 'Completed'?"
+        buttontext="Yes"
+        buttonCancelText="No"
+        onConfirm={() => {
+          completeReturningRequest(idToComplete);
+        }}
+        onCancel={() => {
+          setIsCompleteModal(false);
         }}
       />
     </div>

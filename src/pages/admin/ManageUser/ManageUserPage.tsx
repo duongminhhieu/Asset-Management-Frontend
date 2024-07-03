@@ -6,7 +6,7 @@ import "./ManageUserPage.css";
 import { CloseCircleOutlined, EditOutlined } from "@ant-design/icons";
 import Filter from "@/components/FilterComponent/Filter";
 import CustomPagination from "@/components/Pagination/CustomPagination";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { UserAPICaller } from "@/services/apis/user.api";
 import UserSearchParams from "@/types/UserSearchParams";
 import { useEffect, useState } from "react";
@@ -15,6 +15,8 @@ import APIResponse from "@/types/APIResponse";
 import { SorterResult } from "antd/es/table/interface";
 import UserDetailsModal from "./components/UserDetailsModal";
 import { useNavigate, useLocation } from "react-router-dom";
+import NotificationModal from "@/components/NotificationModal/NotificationModal";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 function ManageUserPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -23,6 +25,9 @@ function ManageUserPage() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [userData, setUserData] = useState<User>();
   const [items, setItems] = useState<User[]>([]);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [openNotiModal, setOpenNotiModal] = useState(false);
+  const [userDeleteId, setUserDeleteId] = useState<number>(0);
 
   const onSearch = (value: string) => {
     setSearchParams({ search: value });
@@ -43,9 +48,42 @@ function ManageUserPage() {
     isError,
     isLoading,
     error,
+    refetch
   } = useQuery(["getAllUsers", { params }], () =>
     UserAPICaller.getSearchUser(params)
   );
+
+  const {
+    data: validAssignData,
+    isSuccess: isSuccessValidAssign,
+    isError: isErrorValidAssign,
+    refetch: refetchValidAssign,
+  } = useQuery(
+    ["getHistoryAsset", { userDeleteId }],
+    () => UserAPICaller.checkValidAssignment(userDeleteId),
+    {
+      enabled: false,
+    }
+  );
+
+  const {
+    isSuccess: isSuccessDelete,
+    isError: isErrorDelete,
+    error: errorDelete,
+    mutate: deleteMutate,
+  } = useMutation(["deleteAsset", { userDeleteId }], () =>
+    UserAPICaller.deleteUser(userDeleteId)
+  );
+
+  useEffect(()=>{
+    if(isSuccessValidAssign){
+      if (validAssignData.data.result === true){
+        setOpenNotiModal(true)
+      } else {
+        setOpenConfirmModal(true)
+      }
+    }
+  },[isSuccessValidAssign, isErrorValidAssign, validAssignData])
 
   useEffect(() => {
     if (isError) {
@@ -56,7 +94,6 @@ function ManageUserPage() {
 
     if (isSuccess) {
       let updatedItems = queryData.data.result.data;
-      console.log(newUser);
       if (newUser) {
         updatedItems = updatedItems.filter(
           (item: User) => item.id !== newUser.id
@@ -70,6 +107,20 @@ function ManageUserPage() {
       setItems(updatedItems);
     }
   }, [error, isError, isSuccess, queryData]);
+
+  useEffect(() => {
+    if (isErrorDelete) {
+      const errorResponse = (errorDelete as { response: { data: APIResponse } })
+        .response.data;
+      message.error(errorResponse.message);
+    }
+
+    if (isSuccessDelete) {
+      message.success("Disable user successfully");
+      refetch();
+    }
+  }, [isErrorDelete, isSuccessDelete, errorDelete]);
+
 
   const baseUser: User = {
     id: 0,
@@ -133,7 +184,7 @@ function ManageUserPage() {
     {
       title: "",
       dataIndex: "action",
-      render: () => (
+      render: (_, record) => (
         <div className="flex space-x-5">
           <EditOutlined
             onClick={(e) => {
@@ -142,8 +193,10 @@ function ManageUserPage() {
           />
           <CloseCircleOutlined
             style={{ color: "red" }}
-            onClick={(e) => {
+            onClick={async (e) => {
               e.stopPropagation();
+              await setUserDeleteId(record.id)
+              refetchValidAssign();
             }}
           />
         </div>
@@ -190,6 +243,11 @@ function ManageUserPage() {
   const handleCreateUser = () => {
     navigate("/admin/users/createUser");
   };
+
+  function handleDelete() {
+    deleteMutate();
+    setOpenConfirmModal(false);
+  }
 
   return (
     <div className="">
@@ -247,6 +305,27 @@ function ManageUserPage() {
         data={userData || baseUser}
         handleClose={() => {
           setShowModal(false);
+        }}
+      />
+      <NotificationModal
+        isOpen={openNotiModal}
+        title={<p className="text-[#e9424d]">Can not disable user</p>}
+        message={
+          <p>
+            There are valid assignments belonging to this user. Please close all
+            assignment before disabling user.
+          </p>
+        }
+        onCancel={() => setOpenNotiModal(false)}
+      />
+      <ConfirmationModal
+        isOpen={openConfirmModal}
+        title={<p className="text-[#e9424d]">Are you sure?</p>}
+        message={<p>Do you want to disable this user?</p>}
+        onCancel={() => setOpenConfirmModal(false)}
+        buttontext="Disable"
+        onConfirm={() => {
+          handleDelete();
         }}
       />
     </div>
