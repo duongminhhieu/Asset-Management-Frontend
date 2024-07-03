@@ -40,4 +40,10 @@ export class UserAPICaller {
 
   static changePassword = (body = {}) =>
     instance.patch(APIConstants.USER.CHANGE_PASSWORD, body);
+
+  static deleteUser = (id:number) =>
+    instance.delete(APIConstants.USER.DELETE_USER(id))
+
+  static checkValidAssignment = (id:number) =>
+    instance.get(APIConstants.USER.VALID_ASSIGNMENT(id))
 }

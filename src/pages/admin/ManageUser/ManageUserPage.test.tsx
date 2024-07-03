@@ -48,7 +48,16 @@ describe("ManageUserPage", () => {
 
   test("sorts users", async () => {
     fireEvent.click(screen.getByText(/Staff Code/i));
-
-    await waitFor(() => expect(screen.getByRole("table")).toBeInTheDocument());
+    await waitFor(() => expect(window.location.search).toContain("orderBy=staffCode&sortDir=asc"));
+    fireEvent.click(screen.getByText(/Staff Code/i));
+    await waitFor(() => expect(window.location.search).toContain("orderBy=staffCode&sortDir=desc"));
+    fireEvent.click(screen.getByText(/Staff Code/i));
+    await waitFor(() => expect(window.location.search).not.toContain("orderBy=staffCode"));
+    fireEvent.click(screen.getAllByText(/Name/i)[0]);
+    await waitFor(() => expect(window.location.search).toContain("orderBy=fullName&sortDir=asc"));
+    fireEvent.click(screen.getByText(/Joined Date/i));
+    await waitFor(() => expect(window.location.search).toContain("orderBy=joinDate&sortDir=asc"));
+    fireEvent.click(screen.getAllByText(/Type/i)[1]);
+    await waitFor(() => expect(window.location.search).toContain("orderBy=type&sortDir=asc"));
   });
 });
