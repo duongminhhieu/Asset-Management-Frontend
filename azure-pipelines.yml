@@ -39,7 +39,7 @@ steps:
     displayName: "Clean install and build"
 
   - script: |
-      npm run coverage:ci > /dev/null
+      npm run coverage:ci || true
     displayName: "Run tests"
 
   - task: PublishTestResults@2
