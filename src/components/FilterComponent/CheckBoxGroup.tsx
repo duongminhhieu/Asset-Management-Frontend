@@ -31,7 +31,7 @@ const CheckBoxGroup: React.FC<Props> = ({ options, paramName }: Props) => {
       } else {
         searchParams.set(paramName, list.join(","));
       }
-
+      searchParams.delete("page")
       return searchParams;
     });
   };

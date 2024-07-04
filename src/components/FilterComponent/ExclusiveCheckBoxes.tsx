@@ -25,6 +25,7 @@ const ExvlusiveCheckBoxes: React.FC<Props> = ({
     setChecked(e.target.value);
     setSearchParams((p) => {
       p.set(paramName, e.target.value);
+      p.delete("page");
       return p;
     });
   };
@@ -33,6 +34,7 @@ const ExvlusiveCheckBoxes: React.FC<Props> = ({
     setChecked(e.target.value);
     setSearchParams((p) => {
       p.delete(paramName);
+      p.delete("page");
       return p;
     });
   };

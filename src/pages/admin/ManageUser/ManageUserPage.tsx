@@ -30,7 +30,11 @@ function ManageUserPage() {
   const [userDeleteId, setUserDeleteId] = useState<number>(0);
 
   const onSearch = (value: string) => {
-    setSearchParams({ search: value });
+    setSearchParams((p)=>{
+      p.set("search", value)
+      p.delete("page")
+      return p
+    });
   };
 
   const params: UserSearchParams = {
@@ -47,6 +51,7 @@ function ManageUserPage() {
     isSuccess,
     isError,
     isLoading,
+    isFetching,
     error,
     refetch
   } = useQuery(["getAllUsers", { params }], () =>
@@ -102,6 +107,15 @@ function ManageUserPage() {
         while (updatedItems.length > 20) {
           updatedItems.pop();
         }
+      }
+      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const currentPage = Number(searchParams.get("page")) || 1;
+      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
+        setSearchParams((p)=>{
+          p.set("page", pageCount===0?"1":pageCount.toString())
+          return p;
+        })
+        refetch();
       }
       window.history.replaceState({}, "");
       setItems(updatedItems);

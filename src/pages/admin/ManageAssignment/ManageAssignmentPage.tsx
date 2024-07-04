@@ -40,7 +40,11 @@ function ManageAssignmentPage() {
     useState<string>("");
   const navigate = useNavigate();
   const onSearch = (value: string) => {
-    setSearchParams({ search: value });
+    setSearchParams((p)=>{
+      p.set("search", value)
+      p.delete("page")
+      return p
+    });
   };
   const location = useLocation();
   const [isOpenDeleteAssignmentModal, setIsOpenDeleteAssignmentModal] =
@@ -67,6 +71,7 @@ function ManageAssignmentPage() {
     isError,
     isLoading,
     error,
+    isFetching,
     refetch,
   } = useQuery(["getAllAssignment", { params }], () =>
     AssignmentAPICaller.getSearchAssignments(params)
@@ -100,12 +105,20 @@ function ManageAssignmentPage() {
       if (newAssignment) {
         const assignmentWithNew = { ...newAssignment, isNew: true };
         temp = temp.filter((item) => item.id !== newAssignment.id);
-
         temp = [assignmentWithNew, ...temp];
         while (temp.length > 20) {
           temp.pop();
         }
         setNewAssignment(undefined);
+      }
+      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const currentPage = Number(searchParams.get("page")) || 1;
+      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
+        setSearchParams((p)=>{
+          p.set("page", pageCount===0?"1":pageCount.toString())
+          return p;
+        })
+        refetch();
       }
       window.history.replaceState({}, "");
       setItems(temp);
