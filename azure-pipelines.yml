@@ -17,12 +17,13 @@ pool:
 
 variables:
   # Container registry service connection established during pipeline creation
-  imageName: "asset-frontend"
-  registryName: "duongminhhieu008"
   appName: "rookies71"
   dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
   tag: "$(Build.BuildId)"
-  containerRegistry: "asset-docker"
+  GCP_PROJECT_ID: "asset-management-428307"
+  containerRegistry: "gcr-connection-2"
+  repositoryName: "assetmanagement"
+  imageName: "asset-frontend"
 
 steps:
   - task: NodeTool@0
@@ -58,11 +59,17 @@ steps:
   #     failIfCoverageEmpty: true
 
   - task: Docker@2
+    displayName: Login to Google Artifact Registry
+    inputs:
+      command: login
+      containerRegistry: $(containerRegistry)
+
+  - task: Docker@2
     displayName: "Build and push an image to container registry"
     inputs:
       command: buildAndPush
-      repository: $(registryName)/$(imageName)
+      repository: $(GCP_PROJECT_ID)/$(repositoryName)/$(imageName)
       dockerfile: $(dockerfilePath)
-      containerRegistry: $(containerRegistry)
       tags: |
         $(tag)
+        latest
