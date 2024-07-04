@@ -14,6 +14,7 @@ function DateFilter({ paramName }: Props) {
           if (e == null){
             setSearchParams(p=>{
               p.delete(paramName);
+              p.delete("page");
               return p;
             })
           }
@@ -23,6 +24,7 @@ function DateFilter({ paramName }: Props) {
               e.month() + 1 >= 10 ? e.month() + 1 : "0" + String(e.month() + 1);
             const year = e.year();
             p.set(paramName, year + "-" + month + "-" + date  );
+            p.delete("page");
             return p;
           });
         }}

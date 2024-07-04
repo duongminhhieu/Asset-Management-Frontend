@@ -26,7 +26,11 @@ function ManageReturningRequestPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState<ReturningRequest[]>([]);
   const onSearch = (value: string) => {
-    setSearchParams({ search: value });
+    setSearchParams((p)=>{
+      p.set("search", value)
+      p.delete("page")
+      return p
+    });
   };
   const location = useLocation();
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
@@ -53,6 +57,7 @@ function ManageReturningRequestPage() {
     isError,
     isLoading,
     error,
+    isFetching,
     refetch,
   } = useQuery(["getAllReturningRequest", { params }], () =>
     ReturningRequestAPICaller.getSearchReturningRequests(params)
@@ -118,6 +123,15 @@ function ManageReturningRequestPage() {
           temp.pop();
         }
         setNewReturningRequest(undefined);
+      }
+      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const currentPage = Number(searchParams.get("page")) || 1;
+      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
+        setSearchParams((p)=>{
+          p.set("page", pageCount===0?"1":pageCount.toString())
+          return p;
+        })
+        refetch();
       }
       window.history.replaceState({}, "");
       setItems(temp);

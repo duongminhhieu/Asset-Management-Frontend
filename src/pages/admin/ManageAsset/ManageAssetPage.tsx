@@ -44,7 +44,11 @@ function ManageAssetPage() {
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
-    setSearchParams({ search: value });
+    setSearchParams((p)=>{
+      p.set("search", value)
+      p.delete("page")
+      return p
+    });
   };
 
   const [idAsset, setIdAsset] = useState<number>(0);
@@ -67,6 +71,7 @@ function ManageAssetPage() {
     isError,
     isLoading,
     error,
+    isFetching,
     refetch,
   } = useQuery(["getAllAssets", { params }], () =>
     AssetAPICaller.getSearchAssets(params)
@@ -136,6 +141,14 @@ function ManageAssetPage() {
         while (temp.length > 20) {
           temp.pop();
         }
+      }
+      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const currentPage = Number(searchParams.get("page")) || 1;
+      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
+        setSearchParams((p)=>{
+          p.set("page", pageCount===0?"1":pageCount.toString())
+          return p;
+        })
       }
       window.history.replaceState({}, "");
       setItems(temp);
