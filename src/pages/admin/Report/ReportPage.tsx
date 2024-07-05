@@ -15,7 +15,6 @@ function ReportPage() {
   // state
   const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState<Report[]>([]);
-  const [isExporting, setIsExporting] = useState(false);
 
   const params: ReportSearchParams = {
     sortBy: searchParams.get("sortBy") || undefined,
