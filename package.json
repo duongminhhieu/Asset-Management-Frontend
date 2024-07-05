@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "coverage": "npm test -- --coverage --watchAll --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**'",
-    "coverage:ci": "npm test --ci --coverage --watchAll=false --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**'",
+    "coverage:ci": "npm test -- --silent --coverage --watchAll=false --collectCoverageFrom='src/pages/**' --collectCoverageFrom='src/components/**'",
     "test": "jest",
     "dev": "vite",
     "build": "tsc && vite build",
