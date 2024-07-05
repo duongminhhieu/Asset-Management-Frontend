@@ -52,5 +52,6 @@ export class APIConstants {
 
   static REPORT = {
     GET_REPORTS: "/reports",
+    EXPORT_REPORT: "/reports/export",
   };
 }

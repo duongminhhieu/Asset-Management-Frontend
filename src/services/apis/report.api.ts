@@ -10,5 +10,10 @@ export class ReportAPICaller {
         });
     }
 
+    static exportReport = () => {
+        return instance.get(APIConstants.REPORT.EXPORT_REPORT, {
+            responseType: 'blob',
+        });
+    }
 
 }

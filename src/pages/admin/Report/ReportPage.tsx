@@ -7,6 +7,7 @@ import { SorterResult } from "antd/es/table/interface";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 const PAGE_SIZE = 20;
 
@@ -14,6 +15,7 @@ function ReportPage() {
   // state
   const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState<Report[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
 
   const params: ReportSearchParams = {
     sortBy: searchParams.get("sortBy") || undefined,
@@ -34,6 +36,16 @@ function ReportPage() {
   } = useQuery(["getReportsList", { params }], () =>
     ReportAPICaller.getReport(params)
   );
+
+  const {
+    data: exportData,
+    isSuccess: exportSuccess,
+    isError: exportError,
+    isLoading: exportLoading,
+    error: exportErrorData,
+  } = useQuery(["exportReport"], () => ReportAPICaller.exportReport(), {
+    enabled: isExporting,
+  });
 
   // effect
   useEffect(() => {
@@ -62,6 +74,29 @@ function ReportPage() {
       setItems(queryData.data.result.data);
     }
   }, [error, isError, isSuccess, queryData]);
+
+  useEffect(() => {
+    if (exportError) {
+      const errorResponse = (
+        exportErrorData as { response: { data: APIResponse } }
+      ).response?.data;
+      message.error(errorResponse?.message);
+      setIsExporting(false);
+    }
+
+    if (exportSuccess) {
+      const blob = new Blob([exportData?.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report_${dayjs(Date.now()).format("YYYY-MM-DD")}.xlsx`;
+      a.click();
+
+      setIsExporting(false);
+    }
+  }, [exportData, exportError, exportSuccess]);
 
   // handlers
   const columns: TableColumnsType<Report> = [
@@ -154,6 +189,10 @@ function ReportPage() {
               type="primary"
               className="text-[#cf2338]"
               color="#cf2338"
+              loading={exportLoading}
+              onClick={() => {
+                setIsExporting(true);
+              }}
             >
               Export
             </Button>
