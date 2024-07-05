@@ -34,9 +34,9 @@ const CustomPagination: React.FC<Props> = ({
     return originalElement;
   };
 
-  useEffect(()=>{
-    setCurrentPage(Number(searchParams.get("page")||1))
-  },[searchParams])
+  useEffect(() => {
+    setCurrentPage(Number(searchParams.get("page") || 1));
+  }, [searchParams]);
 
   const handleOnChange = (page: number) => {
     setSearchParams((p) => {
