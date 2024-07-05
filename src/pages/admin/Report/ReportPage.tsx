@@ -37,15 +37,29 @@ function ReportPage() {
     ReportAPICaller.getReport(params)
   );
 
-  const {
-    data: exportData,
-    isSuccess: exportSuccess,
-    isError: exportError,
-    isLoading: exportLoading,
-    error: exportErrorData,
-  } = useQuery(["exportReport"], () => ReportAPICaller.exportReport(), {
-    enabled: isExporting,
-  });
+  const { isLoading: exportLoading, refetch: refetchExport } = useQuery(
+    ["exportReport"],
+    () => ReportAPICaller.exportReport(),
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
+      onSuccess(data) {
+        const blob = new Blob([data?.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `report_${dayjs(Date.now()).format("YYYY-MM-DD")}.xlsx`;
+        a.click();
+      },
+      onError(error) {
+        const errorResponse = (error as { response: { data: APIResponse } })
+          .response?.data;
+        message.error(errorResponse?.message);
+      },
+    }
+  );
 
   // effect
   useEffect(() => {
@@ -74,29 +88,6 @@ function ReportPage() {
       setItems(queryData.data.result.data);
     }
   }, [error, isError, isSuccess, queryData]);
-
-  useEffect(() => {
-    if (exportError) {
-      const errorResponse = (
-        exportErrorData as { response: { data: APIResponse } }
-      ).response?.data;
-      message.error(errorResponse?.message);
-      setIsExporting(false);
-    }
-
-    if (exportSuccess) {
-      const blob = new Blob([exportData?.data], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `report_${dayjs(Date.now()).format("YYYY-MM-DD")}.xlsx`;
-      a.click();
-
-      setIsExporting(false);
-    }
-  }, [exportData, exportError, exportSuccess]);
 
   // handlers
   const columns: TableColumnsType<Report> = [
@@ -191,7 +182,7 @@ function ReportPage() {
               color="#cf2338"
               loading={exportLoading}
               onClick={() => {
-                setIsExporting(true);
+                refetchExport();
               }}
             >
               Export
