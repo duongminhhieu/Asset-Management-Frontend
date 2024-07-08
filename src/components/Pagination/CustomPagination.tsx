@@ -1,5 +1,5 @@
 import { ConfigProvider, Pagination, PaginationProps, Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
@@ -33,6 +33,10 @@ const CustomPagination: React.FC<Props> = ({
     }
     return originalElement;
   };
+
+  useEffect(()=>{
+    setCurrentPage(Number(searchParams.get("page")||1))
+  },[searchParams])
 
   const handleOnChange = (page: number) => {
     setSearchParams((p) => {

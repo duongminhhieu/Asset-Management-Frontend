@@ -45,6 +45,7 @@ function Home() {
     isError,
     isLoading,
     error,
+    isFetching,
     refetch,
   } = useQuery(["getAllAssignments", { params }], () =>
     AssignmentAPICaller.getMyAssignments(params)
@@ -59,6 +60,15 @@ function Home() {
 
     if (isSuccess) {
       setItems(queryData?.data.result.data || []);
+      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const currentPage = Number(searchParams.get("page")) || 1;
+      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
+        setSearchParams((p)=>{
+          p.set("page", pageCount===0?"1":pageCount.toString())
+          return p;
+        })
+        refetch();
+      }
     }
   }, [error, isError, isSuccess, queryData]);
 
