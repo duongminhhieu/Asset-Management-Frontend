@@ -1,6 +1,7 @@
 export class APIConstants {
   static AUTH = {
     LOGIN: "/auth/login",
+    LOGOUT: "/auth/logout"
   };
 
   static USER = {
