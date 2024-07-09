@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { APIConstants } from "../api.constant";
 import instance from "../instance.axios";
 import UserSearchParams from "@/types/UserSearchParams";
-import { UserRequest } from "@/types/UserRequest";
+import { UserRequest, UserUpdateRequest } from "@/types/UserRequest";
 
 export class UserAPICaller {
   static firstChangePassword = (body = {}, token: string) => {
@@ -26,7 +26,6 @@ export class UserAPICaller {
   static createUser = (userData: UserRequest) =>
     instance.post(APIConstants.USER.CREATE_USER, userData);
 
-
   static getSearchUser = (userSearchParams: UserSearchParams) => {
     return instance.get(APIConstants.USER.GET_USERS, {
       params: userSearchParams,
@@ -41,9 +40,15 @@ export class UserAPICaller {
   static changePassword = (body = {}) =>
     instance.patch(APIConstants.USER.CHANGE_PASSWORD, body);
 
-  static deleteUser = (id:number) =>
-    instance.delete(APIConstants.USER.DELETE_USER(id))
+  static deleteUser = (id: number) =>
+    instance.delete(APIConstants.USER.DELETE_USER(id));
 
-  static checkValidAssignment = (id:number) =>
-    instance.get(APIConstants.USER.VALID_ASSIGNMENT(id))
+  static checkValidAssignment = (id: number) =>
+    instance.get(APIConstants.USER.VALID_ASSIGNMENT(id));
+
+  static editUser = (id: number, userUpdateRequest: UserUpdateRequest) =>
+    instance.put(APIConstants.USER.EDIT_USER(id), userUpdateRequest);
+
+  static getUserById = (id: number) =>
+    instance.get(APIConstants.USER.GET_USER_BY_ID(id));
 }

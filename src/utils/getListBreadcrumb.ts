@@ -47,6 +47,8 @@ function getNameBreadcrumb(key: string) {
       return "Request for Returning";
     case "reports":
       return "Reports";
+    case "edit-user":
+      return "Edit User";
     default:
       return key;
   }

@@ -14,6 +14,7 @@ import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmen
 import ManageReturningRequestPage from "./pages/admin/ManageReturningRequest/ManageReturningRequest";
 import EditAsset from "./pages/admin/EditAsset/EditAsset";
 import ReportPage from "./pages/admin/Report/ReportPage";
+import EditUser from "./pages/admin/EditUser/EditUser";
 
 function App() {
   return (
@@ -41,6 +42,14 @@ function App() {
           element={
             <AdminRoute>
               <ManageUser />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users/edit-user/:id"
+          element={
+            <AdminRoute>
+              <EditUser />
             </AdminRoute>
           }
         />
