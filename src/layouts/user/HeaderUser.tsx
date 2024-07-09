@@ -1,3 +1,4 @@
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 import ModalChangePassword from "@/components/ModalChangePassword/ModalChangePassword";
 import { AuthAPICaller } from "@/services/apis/auth.api";
 import APIResponse from "@/types/APIResponse";
@@ -16,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 function HeaderUser() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [openLogout, setOpenLogout] = useState(false);
 
   // hooks
   const navigate = useNavigate();
@@ -29,10 +31,10 @@ function HeaderUser() {
       message.success("Logout success");
       navigate("/login");
     },
-    onError: (error)=> {
-      const errorResponse = error as APIResponse
-      message.error(errorResponse.message)
-    }
+    onError: (error) => {
+      const errorResponse = error as APIResponse;
+      message.error(errorResponse.message);
+    },
   });
 
   // handlers
@@ -57,7 +59,7 @@ function HeaderUser() {
         // localStorage.removeItem("token");
         // message.success("Logout success");
         // navigate("/login");
-        mutate();
+        setOpenLogout(true);
       },
     },
   ];
@@ -86,6 +88,18 @@ function HeaderUser() {
       <ModalChangePassword
         isOpen={isOpenModal}
         setIsOpenModal={setIsOpenModal}
+      />
+      <ConfirmationModal
+        isOpen={openLogout}
+        title={"Are you sure?"}
+        message={"Do you want to log out?"}
+        buttontext={"Log out"}
+        onConfirm={() => {
+          mutate();
+        }}
+        onCancel={() => {
+          setOpenLogout(false);
+        }}
       />
     </>
   );
