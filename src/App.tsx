@@ -12,6 +12,7 @@ import CreateAssignment from "./pages/admin/CreateAssignment/CreateAssignment";
 import EditAssignment from "./pages/admin/EditAssignment/EditAssignment";
 import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmentPage";
 import ManageReturningRequestPage from "./pages/admin/ManageReturningRequest/ManageReturningRequest";
+import EditAsset from "./pages/admin/EditAsset/EditAsset";
 import ReportPage from "./pages/admin/Report/ReportPage";
 
 function App() {
@@ -56,6 +57,15 @@ function App() {
           element={
             <AdminRoute>
               <AddAsset />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/assets/edit-asset/:id"
+          element={
+            <AdminRoute>
+              <EditAsset />
             </AdminRoute>
           }
         />

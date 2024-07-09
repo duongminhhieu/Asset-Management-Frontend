@@ -17,4 +17,20 @@ export class AssetAPICaller {
 
   static getAssetHistory = (id: number) =>
     instance.get(APIConstants.ASSET.GET_ASSET_HISTORY(id));
+
+  static getAsset = (id : number) =>
+    instance.get(APIConstants.ASSET.GET_ASSET(id));
+
+  static editAsset = ({
+    assetId,
+    body = {},
+  }: {
+    assetId: number;
+    body?: any;
+  }) => {
+    return instance.put(
+      APIConstants.ASSET.EDIT_ASSET(assetId),
+      body
+    );
+  };
 }

@@ -1,5 +1,5 @@
 import SearchFieldComponent from "@/components/SearchFieldComponent/SearchFieldComponent";
-import { Button, Table, TableColumnsType, message } from "antd";
+import { Button, Table, TableColumnsType, Badge, message } from "antd";
 import {
   NavLink,
   useLocation,
@@ -44,10 +44,10 @@ function ManageAssetPage() {
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
-    setSearchParams((p)=>{
-      p.set("search", value)
-      p.delete("page")
-      return p
+    setSearchParams((p) => {
+      p.set("search", value);
+      p.delete("page");
+      return p;
     });
   };
 
@@ -142,13 +142,17 @@ function ManageAssetPage() {
           temp.pop();
         }
       }
-      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const pageCount = Math.ceil(queryData?.data.result.total / 20);
       const currentPage = Number(searchParams.get("page")) || 1;
-      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
-        setSearchParams((p)=>{
-          p.set("page", pageCount===0?"1":pageCount.toString())
+      if (
+        pageCount < currentPage &&
+        searchParams.get("page") !== "1" &&
+        !isFetching
+      ) {
+        setSearchParams((p) => {
+          p.set("page", pageCount === 0 ? "1" : pageCount.toString());
           return p;
-        })
+        });
       }
       window.history.replaceState({}, "");
       setItems(temp);
@@ -218,11 +222,24 @@ function ManageAssetPage() {
       dataIndex: "action",
       render: (_text, record) => (
         <div className="flex space-x-5">
-          <EditOutlined
+          <button
+            disabled={record.state == "ASSIGNED"}
             onClick={(e) => {
               e.stopPropagation();
+              navigate(`/admin/assets/edit-asset/${record.id}`);
             }}
-          />
+            className={
+              record.state == "ASSIGNED"
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <EditOutlined
+              data-testid="edit-assignment"
+              style={{ color: record.state == "ASSIGNED" ? "gray" : "black" }}
+            />
+          </button>
+
           {/* <Button disabled={true}> */}
           <button
             disabled={record.state == "ASSIGNED"}
@@ -237,6 +254,7 @@ function ManageAssetPage() {
             />
           </button>
           {/* </Button> */}
+          {asset && asset.id === record.id && <Badge count={"New"} />}
         </div>
       ),
       key: "action",

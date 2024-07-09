@@ -29,6 +29,8 @@ export class APIConstants {
     GET_ASSETS: "/assets",
     DELETE_ASSET: (id: number) => `/assets/${id}`,
     GET_ASSET_HISTORY: (id: number) => `assets/exist-assignments/${id}`,
+    EDIT_ASSET: (id: number) => `/assets/${id}`,
+    GET_ASSET: (id : number) => `/assets/${id}`,
   };
 
   static ASSIGNMENT = {
