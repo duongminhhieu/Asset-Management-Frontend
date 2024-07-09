@@ -16,3 +16,8 @@ export type ReportSearchParams = {
     sortBy?: string;
     sortDir?: string;
 }
+
+export type ReportSortParams = {
+    sortBy?: string;
+    sortDir?: string;
+}

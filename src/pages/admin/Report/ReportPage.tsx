@@ -1,7 +1,7 @@
 import CustomPagination from "@/components/Pagination/CustomPagination";
 import { ReportAPICaller } from "@/services/apis/report.api";
 import APIResponse from "@/types/APIResponse";
-import { Report, ReportSearchParams } from "@/types/Report";
+import { Report, ReportSearchParams, ReportSortParams } from "@/types/Report";
 import { Button, Table, TableColumnsType, TableProps, message } from "antd";
 import { SorterResult } from "antd/es/table/interface";
 import { useEffect, useState } from "react";
@@ -23,6 +23,11 @@ function ReportPage() {
     pageSize: PAGE_SIZE,
   };
 
+  const sort: ReportSortParams = {
+    sortBy: searchParams.get("sortBy") || undefined,
+    sortDir: searchParams.get("sortDir") || undefined
+  };
+
   // query
   const {
     data: queryData,
@@ -37,8 +42,8 @@ function ReportPage() {
   );
 
   const { isLoading: exportLoading, refetch: refetchExport } = useQuery(
-    ["exportReport"],
-    () => ReportAPICaller.exportReport(),
+    ["exportReport", {sort}],
+    () => ReportAPICaller.exportReport(sort),
     {
       refetchOnWindowFocus: false,
       enabled: false,
