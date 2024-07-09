@@ -12,6 +12,7 @@ import CreateAssignment from "./pages/admin/CreateAssignment/CreateAssignment";
 import EditAssignment from "./pages/admin/EditAssignment/EditAssignment";
 import ManageAssignmentPage from "./pages/admin/ManageAssignment/ManageAssignmentPage";
 import ManageReturningRequestPage from "./pages/admin/ManageReturningRequest/ManageReturningRequest";
+import ReportPage from "./pages/admin/Report/ReportPage";
 
 function App() {
   return (
@@ -82,6 +83,15 @@ function App() {
           element={
             <AdminRoute>
               <EditAssignment />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/reports"
+          element={
+            <AdminRoute>
+              <ReportPage />
             </AdminRoute>
           }
         />
