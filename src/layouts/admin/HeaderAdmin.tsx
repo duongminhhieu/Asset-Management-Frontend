@@ -11,14 +11,33 @@ import { useNavigate } from "react-router-dom";
 import "@/layouts/BreadcrumbCustom.css";
 import getListBreadcrumb from "@/utils/getListBreadcrumb";
 import ModalChangePassword from "@/components/ModalChangePassword/ModalChangePassword";
+import { useMutation } from "react-query";
+import { AuthAPICaller } from "@/services/apis/auth.api";
+import APIResponse from "@/types/APIResponse";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 function HeaderAdmin() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const [openLogout, setOpenLogout] = useState(false);
 
   // hooks
   const navigate = useNavigate();
 
   const user: User = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const { mutate } = useMutation(AuthAPICaller.logout, {
+    onSuccess: () => {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      message.success("Logout success");
+      navigate("/login");
+    },
+    onError: (error) => {
+      const errorResponse = error as APIResponse;
+      message.error(errorResponse.message);
+    },
+  });
 
   // handlers
 
@@ -38,11 +57,7 @@ function HeaderAdmin() {
       icon: <LogoutOutlined />,
       danger: true,
       onClick: () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        message.success("Logout success");
-        navigate("/login");
-        // showModal();
+        setOpenLogout(true);
       },
     },
   ];
@@ -72,6 +87,18 @@ function HeaderAdmin() {
       <ModalChangePassword
         isOpen={isOpenModal}
         setIsOpenModal={setIsOpenModal}
+      />
+      <ConfirmationModal
+        isOpen={openLogout}
+        title={"Are you sure?"}
+        message={"Do you want to log out?"}
+        buttontext={"Log out"}
+        onConfirm={() => {
+          mutate();
+        }}
+        onCancel={() => {
+          setOpenLogout(false);
+        }}
       />
     </>
   );

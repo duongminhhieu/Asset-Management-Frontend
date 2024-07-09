@@ -41,10 +41,14 @@ function getNameBreadcrumb(key: string) {
       return "Create New Assignment";
     case "edit-assignment":
       return "Edit Assignment";
+    case "edit-asset":
+      return "Edit Asset";
     case "returning-requests":
       return "Request for Returning";
     case "reports":
       return "Reports";
+    case "edit-user":
+      return "Edit User";
     default:
       return key;
   }
