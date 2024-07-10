@@ -10,6 +10,7 @@ import {
   Table,
   TableColumnsType,
   TableProps,
+  Typography,
   message,
 } from "antd";
 import { SorterResult } from "antd/es/table/interface";
@@ -118,7 +119,16 @@ function ModalSelectUser({
       dataIndex: "fullName",
       showSorterTooltip: true,
       sorter: true, // add API later
-      render: (_text, record) => `${record.firstName} ${record.lastName}`,
+      width: "60%",
+      render: (_text, record) => (
+        <Typography.Paragraph
+          ellipsis={{
+            expandable: "collapsible",
+          }}
+        >
+          {
+        `${record.firstName} ${record.lastName}`}
+        </Typography.Paragraph>),
       key: "fullName",
     },
     {
