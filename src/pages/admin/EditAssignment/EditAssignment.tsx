@@ -138,9 +138,11 @@ function EditAssignment() {
 
   const handleFieldsChange = () => {
     const fields = form.getFieldsValue();
-    const { fullName, assetName, assignedDate } = fields;
+    const { fullName, assetName, assignedDate, note } = fields;
 
-    setIsButtonDisabled(!fullName || !assetName || !assignedDate);
+    setIsButtonDisabled(
+      !fullName || !assetName || !assignedDate || note.length > 1024
+    );
   };
 
   if (isGetAssignmentLoading) {

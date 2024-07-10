@@ -89,7 +89,9 @@ function AddAsset() {
         !specification ||
         /^\s|\s$/.test(specification) ||
         !installDate ||
-        installDate < threeMonthsAgo
+        installDate < threeMonthsAgo ||
+        name.length > 255 ||
+        specification > 1024
     );
   };
 
