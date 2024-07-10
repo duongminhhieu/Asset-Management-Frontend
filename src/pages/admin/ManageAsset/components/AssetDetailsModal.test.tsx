@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { AssignmentAPICaller } from "@/services/apis/assignment.api";
 import { AxiosHeaders, AxiosResponse } from "axios";
 import APIResponse from "@/types/APIResponse";
+import { AssetResponse } from "@/types/Asset";
 
 jest.mock("@/services/apis/assignment.api");
 const mockedAssignmentAPICaller = AssignmentAPICaller as jest.Mocked<typeof AssignmentAPICaller>;
@@ -20,14 +21,14 @@ describe("Test User Details Modal", () => {
     category: "Laptop",
     assetCode: "LP0001",
     installDate: new Date(),
-    state: "Available",
+    state: "ASSIGNED",
     location: {
       id: 1,
       name: "Ho Chi Minh",
       code: "HCM",
     },
     EAssetSate:""
-  };
+  } as AssetResponse;
 
   beforeEach(() => {
     component = render(

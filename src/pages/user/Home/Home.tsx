@@ -91,7 +91,7 @@ function Home() {
       installDate: new Date(),
       EAssetSate: "",
       specification: "",
-      state: "",
+      state: "ASSIGNED",
     },
     state: "",
     returnDate: null,

@@ -32,7 +32,7 @@ describe("AssignmenDetailsModal", () => {
         name: undefined,
         code: undefined,
       },
-      state: "",
+      state: "ASSIGNED",
     },
     assignTo: "John Doe",
     assignBy: "Jane Doe",

@@ -160,7 +160,7 @@ function EditAsset() {
           hasFeedback
           labelAlign="left"
           rules={[
-            { max: 255, message: "Must be less than 1024 characters!" },
+            { max: 255, message: "Must be less than 255 characters!" },
             { required: true, message: "Please insert name" },
           ]}
         >
