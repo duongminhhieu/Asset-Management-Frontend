@@ -426,7 +426,7 @@ function ManageAssetPage() {
           <p>
             Cannot delete the asset because it belongs to one or more historical
             assignments. If the asset is not able to be used anymore, please
-            update its state in <NavLink to={"/abc"}>Edit Asset Page</NavLink>
+            update its state in <NavLink className="underline text-blue-500" to={`/admin/assets/edit-asset/${idAsset}`}>Edit Asset Page</NavLink>
           </p>
         }
         onCancel={() => setOpenNotificationModal(false)}
