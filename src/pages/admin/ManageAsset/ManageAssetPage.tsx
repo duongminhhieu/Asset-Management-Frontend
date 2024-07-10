@@ -87,6 +87,14 @@ function ManageAssetPage() {
     error: errorCategory,
   } = useQuery(["getAllCategory"], () => CategoryAPICaller.getAll());
 
+  const displayState = {
+    AVAILABLE: "Available",
+    NOT_AVAILABLE: "Not Available",
+    ASSIGNED: "Assigned",
+    WAITING_FOR_RECYCLE: "Waiting for recycle",
+    RECYCLED: "Recycled",
+  };
+
   // UseQuery For History
 
   const {
@@ -216,6 +224,13 @@ function ManageAssetPage() {
       dataIndex: "state",
       showSorterTooltip: true,
       sorter: true, // add API later
+      render: (
+        state:
+          | "AVAILABLE"
+          | "NOT_AVAILABLE"
+          | "WAITING_FOR_RECYCLE"
+          | "RECYCLED"
+      ) => displayState[state],
     },
     {
       title: "",

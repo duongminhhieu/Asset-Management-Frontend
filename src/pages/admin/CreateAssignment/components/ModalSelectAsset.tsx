@@ -10,6 +10,7 @@ import {
   Table,
   TableColumnsType,
   TableProps,
+  Typography,
   message,
 } from "antd";
 import { SorterResult } from "antd/es/table/interface";
@@ -104,6 +105,16 @@ function ModalSelectAsset({
       showSorterTooltip: true,
       sorter: true, // add API later
       key: "Name",
+      width: "60%",
+      render: (assetName: string) => (
+        <Typography.Paragraph
+          ellipsis={{
+            expandable: "collapsible",
+          }}
+        >
+          {assetName}
+        </Typography.Paragraph>
+      ),
     },
     {
       title: "Category",
@@ -111,6 +122,15 @@ function ModalSelectAsset({
       showSorterTooltip: true,
       sorter: true,
       key: "category",
+      width: "30%",
+      render: (assetName: string) => (
+        <Typography.Paragraph
+          ellipsis={{
+            expandable: "collapsible",
+          }}
+        >
+          {assetName}
+        </Typography.Paragraph>)
     },
   ];
 
@@ -126,8 +146,8 @@ function ModalSelectAsset({
       name: record.name,
     }),
   };
-  
-  const handlePageChange = (page : number) =>{
+
+  const handlePageChange = (page: number) => {
     setParams({
       searchString: "",
       states: "AVAILABLE",
@@ -138,7 +158,7 @@ function ModalSelectAsset({
       pageSize: PAGE_SIZE,
     });
     refetch();
-  }
+  };
 
   const handleCancel = () => {
     setIsButtonDisabled(true);
