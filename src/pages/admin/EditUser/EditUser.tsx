@@ -31,6 +31,7 @@ const EditUser: React.FC = () => {
   const [form] = Form.useForm<FormValues>();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [version, setVersion] = useState("");
 
   const { data, isLoading, error } = useQuery(["user", id], () =>
@@ -63,7 +64,7 @@ const EditUser: React.FC = () => {
 
     UserAPICaller.editUser(Number(id), requestData)
       .then((response) => {
-        console.log(response.data.result)
+        console.log(response.data.result);
         navigate("/admin/users", {
           state: { newUser: response.data.result },
         });
@@ -128,6 +129,13 @@ const EditUser: React.FC = () => {
     return <div>Error loading user data</div>;
   }
 
+  const handleFieldsChange = () => {
+    const fields = form.getFieldsValue();
+    const { dob, joinDate } = fields;
+
+    setIsButtonDisabled(!dob || !joinDate);
+  };
+
   return (
     <Form
       form={form}
@@ -138,6 +146,7 @@ const EditUser: React.FC = () => {
       colon={false}
       requiredMark={false}
       onFinish={onFinish}
+      onFieldsChange={handleFieldsChange}
     >
       <Typography className="text-xl font-semibold text-red-500 font-serif pb-5">
         Edit User
@@ -233,7 +242,12 @@ const EditUser: React.FC = () => {
         style={{ display: "flex", justifyContent: "flex-end", gap: "20px" }}
       >
         <Form.Item>
-          <Button type="primary" danger htmlType="submit">
+          <Button
+            type="primary"
+            danger
+            htmlType="submit"
+            disabled={isButtonDisabled}
+          >
             Save
           </Button>
         </Form.Item>

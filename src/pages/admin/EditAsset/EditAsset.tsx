@@ -112,7 +112,14 @@ function EditAsset() {
     const fields = form.getFieldsValue();
     const { name, installDate, specification, state } = fields;
 
-    setIsButtonDisabled(!name || !installDate || !specification || !state);
+    setIsButtonDisabled(
+      !name ||
+        !installDate ||
+        !specification ||
+        !state ||
+        name.length > 255 ||
+        specification.length > 1024
+    );
   };
 
   if (isGetAssetLoading) {
@@ -152,7 +159,10 @@ function EditAsset() {
           name="name"
           hasFeedback
           labelAlign="left"
-          rules={[{ required: true, message: "Please insert name" }]}
+          rules={[
+            { max: 255, message: "Must be less than 1024 characters!" },
+            { required: true, message: "Please insert name" },
+          ]}
         >
           <Input name="name" />
         </Form.Item>
