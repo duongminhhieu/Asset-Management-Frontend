@@ -129,8 +129,8 @@ const CreateUser: React.FC = () => {
         isGenderValid &&
         isJoinDateValid &&
         isRoleValid &&
-        firstName.length < 128 &&
-        lastName.length < 128
+        firstName.length <= 128 &&
+        lastName.length <= 128
       )
     );
     setUsername(
