@@ -102,7 +102,6 @@ const EditUser: React.FC = () => {
       return Promise.reject("Please select the join date!");
     }
 
-    // Kiểm tra join date phải trước dob
     const dob = form.getFieldValue("dob");
     if (dob && value < dob) {
       return Promise.reject("Join date must be after the Date of Birth!");
@@ -130,10 +129,9 @@ const EditUser: React.FC = () => {
   }
 
   const handleFieldsChange = () => {
-    const fields = form.getFieldsValue();
-    const { dob, joinDate } = fields;
-
-    setIsButtonDisabled(!dob || !joinDate);
+    const fieldsError = form.getFieldsError();
+    const hasErrors = fieldsError.some(field => field.errors.length > 0);
+    setIsButtonDisabled(hasErrors);
   };
 
   return (
@@ -210,6 +208,7 @@ const EditUser: React.FC = () => {
         label="Joined Date"
         name="joinDate"
         hasFeedback
+        dependencies={["dob"]}
         rules={[{ validator: validateJoinDate }]}
         labelAlign="left"
       >

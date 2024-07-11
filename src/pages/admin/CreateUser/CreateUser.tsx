@@ -85,19 +85,22 @@ const CreateUser: React.FC = () => {
 
   const validateJoinDate = (_: unknown, value: Date) => {
     if (!value) {
-      return Promise.reject("Please select the join date!");
+      return Promise.reject(new Error("Please select the join date!"));
     }
 
-    // Kiểm tra join date phải trước dob
     const dob = form.getFieldValue("dob");
     if (dob && value < dob) {
-      return Promise.reject("Join date must be after the Date of Birth!");
+      return Promise.reject(
+        new Error("Join date must be after the Date of Birth!")
+      );
     }
 
     const date = new Date(value);
     const dayOfWeek = date.getDay();
     if (dayOfWeek === 0 || dayOfWeek === 6) {
-      return Promise.reject("Join date cannot be on Saturday or Sunday!");
+      return Promise.reject(
+        new Error("Join date cannot be on Saturday or Sunday!")
+      );
     }
 
     return Promise.resolve();
@@ -120,6 +123,8 @@ const CreateUser: React.FC = () => {
     const isGenderValid = fieldsValues.gender != null;
     const isJoinDateValid = fieldsValues.joinDate != null;
     const isRoleValid = fieldsValues.role != null && fieldsValues.role !== "";
+    const fieldsError = form.getFieldsError();
+    const hasErrors = fieldsError.some(field => field.errors.length > 0);
 
     setIsButtonDisabled(
       !(
@@ -130,9 +135,11 @@ const CreateUser: React.FC = () => {
         isJoinDateValid &&
         isRoleValid &&
         firstName.length <= 128 &&
-        lastName.length <= 128
+        lastName.length <= 128 &&
+        !hasErrors
       )
     );
+
     setUsername(
       isFirstNameValid && isLastNameValid ? `${firstName} ${lastName}` : ""
     );
@@ -226,6 +233,7 @@ const CreateUser: React.FC = () => {
         label="Joined Date"
         name="joinDate"
         hasFeedback
+        dependencies={['dob']}
         rules={[{ validator: validateJoinDate }]}
         labelAlign="left"
       >
