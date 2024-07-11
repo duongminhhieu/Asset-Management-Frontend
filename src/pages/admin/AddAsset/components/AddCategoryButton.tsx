@@ -58,7 +58,7 @@ function AddCategoryButton({ items, setItems }: ClickableTextProps) {
         !name.trim() ||
         !(code.length === 2) ||
         !(code.trim().length === 2) ||
-        name > 255
+        name.length > 255
     );
   };
 
