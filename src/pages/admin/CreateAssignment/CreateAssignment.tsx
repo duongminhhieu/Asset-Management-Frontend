@@ -93,7 +93,7 @@ function CreateAssignment() {
     const { fullName, assetName, assignedDate, note } = fields;
 
     setIsButtonDisabled(
-      !fullName || !assetName || !assignedDate || note.length > 1024
+      !fullName || !assetName || !assignedDate || (note && note.length > 1024)
     );
   };
 

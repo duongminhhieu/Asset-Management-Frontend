@@ -327,14 +327,14 @@ function ManageAssetPage() {
     category: "",
     assetCode: "",
     installDate: new Date(),
-    state: "",
+    state: "ASSIGNED",
     location: {
       id: 1,
       name: "Ho Chi Minh",
       code: "HCM",
     },
     EAssetSate: "",
-  };
+  } as AssetResponse;
 
   return (
     <div className="">

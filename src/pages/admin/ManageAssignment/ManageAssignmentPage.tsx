@@ -335,6 +335,7 @@ function ManageAssignmentPage() {
             options={[
               { label: "Accepted", value: "ACCEPTED" },
               { label: "Waiting for acceptance", value: "WAITING" },
+              { label: "Declined", value: "DECLINED"}
             ]}
             paramName={"states"}
           />

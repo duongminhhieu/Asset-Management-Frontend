@@ -35,5 +35,5 @@ export type AssetResponse = {
   EAssetSate: string;
   category: string;
   location: Location;
-  state:string;
+  state: string;
 };
