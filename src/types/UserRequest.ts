@@ -7,3 +7,11 @@ export type UserRequest = {
   role: string;
   locationId?: number;
 };
+
+export type UserUpdateRequest = {
+  dob: string;
+  gender: string;
+  joinDate: string;
+  type: string;
+  version: number;
+};

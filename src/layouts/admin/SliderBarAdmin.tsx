@@ -27,7 +27,7 @@ const items = [
     label: "Request For Returning",
   },
   {
-    key: "report",
+    key: "reports",
     label: "Report",
   },
 ];
@@ -51,6 +51,9 @@ function SliderBarAdmin() {
         break;
       case "returning-requests":
         navigate("/admin/returning-requests");
+        break;
+      case "reports":
+        navigate("/admin/reports");
         break;
       default:
         break;

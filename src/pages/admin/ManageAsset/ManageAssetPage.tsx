@@ -1,5 +1,5 @@
 import SearchFieldComponent from "@/components/SearchFieldComponent/SearchFieldComponent";
-import { Button, Table, TableColumnsType, message } from "antd";
+import { Button, Table, TableColumnsType, Badge, message } from "antd";
 import {
   NavLink,
   useLocation,
@@ -44,10 +44,10 @@ function ManageAssetPage() {
   const navigate = useNavigate();
 
   const onSearch = (value: string) => {
-    setSearchParams((p)=>{
-      p.set("search", value)
-      p.delete("page")
-      return p
+    setSearchParams((p) => {
+      p.set("search", value);
+      p.delete("page");
+      return p;
     });
   };
 
@@ -86,6 +86,14 @@ function ManageAssetPage() {
     isError: isErrorCategory,
     error: errorCategory,
   } = useQuery(["getAllCategory"], () => CategoryAPICaller.getAll());
+
+  const displayState = {
+    AVAILABLE: "Available",
+    NOT_AVAILABLE: "Not Available",
+    ASSIGNED: "Assigned",
+    WAITING_FOR_RECYCLE: "Waiting for recycle",
+    RECYCLED: "Recycled",
+  };
 
   // UseQuery For History
 
@@ -142,13 +150,17 @@ function ManageAssetPage() {
           temp.pop();
         }
       }
-      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const pageCount = Math.ceil(queryData?.data.result.total / 20);
       const currentPage = Number(searchParams.get("page")) || 1;
-      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
-        setSearchParams((p)=>{
-          p.set("page", pageCount===0?"1":pageCount.toString())
+      if (
+        pageCount < currentPage &&
+        searchParams.get("page") !== "1" &&
+        !isFetching
+      ) {
+        setSearchParams((p) => {
+          p.set("page", pageCount === 0 ? "1" : pageCount.toString());
           return p;
-        })
+        });
       }
       window.history.replaceState({}, "");
       setItems(temp);
@@ -212,17 +224,37 @@ function ManageAssetPage() {
       dataIndex: "state",
       showSorterTooltip: true,
       sorter: true, // add API later
+      render: (
+        state:
+          | "AVAILABLE"
+          | "NOT_AVAILABLE"
+          | "WAITING_FOR_RECYCLE"
+          | "RECYCLED"
+      ) => displayState[state],
     },
     {
       title: "",
       dataIndex: "action",
       render: (_text, record) => (
         <div className="flex space-x-5">
-          <EditOutlined
+          <button
+            disabled={record.state == "ASSIGNED"}
             onClick={(e) => {
               e.stopPropagation();
+              navigate(`/admin/assets/edit-asset/${record.id}`);
             }}
-          />
+            className={
+              record.state == "ASSIGNED"
+                ? "cursor-not-allowed"
+                : "hover:opacity-70 hover:text-red-600"
+            }
+          >
+            <EditOutlined
+              data-testid="edit-assignment"
+              style={{ color: record.state == "ASSIGNED" ? "gray" : "black" }}
+            />
+          </button>
+
           {/* <Button disabled={true}> */}
           <button
             disabled={record.state == "ASSIGNED"}
@@ -237,6 +269,7 @@ function ManageAssetPage() {
             />
           </button>
           {/* </Button> */}
+          {asset && asset.id === record.id && <Badge count={"New"} />}
         </div>
       ),
       key: "action",
@@ -294,14 +327,14 @@ function ManageAssetPage() {
     category: "",
     assetCode: "",
     installDate: new Date(),
-    state: "",
+    state: "ASSIGNED",
     location: {
       id: 1,
       name: "Ho Chi Minh",
       code: "HCM",
     },
     EAssetSate: "",
-  };
+  } as AssetResponse;
 
   return (
     <div className="">
@@ -393,7 +426,7 @@ function ManageAssetPage() {
           <p>
             Cannot delete the asset because it belongs to one or more historical
             assignments. If the asset is not able to be used anymore, please
-            update its state in <NavLink to={"/abc"}>Edit Asset Page</NavLink>
+            update its state in <NavLink className="underline text-blue-500" to={`/admin/assets/edit-asset/${idAsset}`}>Edit Asset Page</NavLink>
           </p>
         }
         onCancel={() => setOpenNotificationModal(false)}

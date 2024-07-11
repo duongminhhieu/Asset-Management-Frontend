@@ -1,4 +1,7 @@
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 import ModalChangePassword from "@/components/ModalChangePassword/ModalChangePassword";
+import { AuthAPICaller } from "@/services/apis/auth.api";
+import APIResponse from "@/types/APIResponse";
 import { User } from "@/types/User";
 import getListBreadcrumb from "@/utils/getListBreadcrumb";
 import {
@@ -9,15 +12,30 @@ import {
 import { Breadcrumb, Dropdown, MenuProps, Space, message } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 
-function HeaderUser({}) {
+function HeaderUser() {
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [openLogout, setOpenLogout] = useState(false);
 
   // hooks
   const navigate = useNavigate();
 
   const user: User = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const { mutate } = useMutation(AuthAPICaller.logout, {
+    onSuccess: () => {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      message.success("Logout success");
+      navigate("/login");
+    },
+    onError: (error) => {
+      const errorResponse = error as APIResponse;
+      message.error(errorResponse.message);
+    },
+  });
 
   // handlers
 
@@ -37,10 +55,11 @@ function HeaderUser({}) {
       icon: <LogoutOutlined />,
       danger: true,
       onClick: () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        message.success("Logout success");
-        navigate("/login");
+        // localStorage.removeItem("user");
+        // localStorage.removeItem("token");
+        // message.success("Logout success");
+        // navigate("/login");
+        setOpenLogout(true);
       },
     },
   ];
@@ -69,6 +88,18 @@ function HeaderUser({}) {
       <ModalChangePassword
         isOpen={isOpenModal}
         setIsOpenModal={setIsOpenModal}
+      />
+      <ConfirmationModal
+        isOpen={openLogout}
+        title={"Are you sure?"}
+        message={"Do you want to log out?"}
+        buttontext={"Log out"}
+        onConfirm={() => {
+          mutate();
+        }}
+        onCancel={() => {
+          setOpenLogout(false);
+        }}
       />
     </>
   );

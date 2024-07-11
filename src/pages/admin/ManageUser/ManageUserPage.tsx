@@ -1,6 +1,6 @@
 import SearchFieldComponent from "@/components/SearchFieldComponent/SearchFieldComponent";
 import { User } from "@/types/User";
-import { Button, Table, TableColumnsType, message } from "antd";
+import { Button, Table, TableColumnsType, message, Badge } from "antd";
 import { useSearchParams } from "react-router-dom";
 import "./ManageUserPage.css";
 import { CloseCircleOutlined, EditOutlined } from "@ant-design/icons";
@@ -30,10 +30,10 @@ function ManageUserPage() {
   const [userDeleteId, setUserDeleteId] = useState<number>(0);
 
   const onSearch = (value: string) => {
-    setSearchParams((p)=>{
-      p.set("search", value)
-      p.delete("page")
-      return p
+    setSearchParams((p) => {
+      p.set("search", value);
+      p.delete("page");
+      return p;
     });
   };
 
@@ -53,7 +53,7 @@ function ManageUserPage() {
     isLoading,
     isFetching,
     error,
-    refetch
+    refetch,
   } = useQuery(["getAllUsers", { params }], () =>
     UserAPICaller.getSearchUser(params)
   );
@@ -80,15 +80,15 @@ function ManageUserPage() {
     UserAPICaller.deleteUser(userDeleteId)
   );
 
-  useEffect(()=>{
-    if(isSuccessValidAssign){
-      if (validAssignData.data.result === true){
-        setOpenNotiModal(true)
+  useEffect(() => {
+    if (isSuccessValidAssign) {
+      if (validAssignData.data.result === true) {
+        setOpenNotiModal(true);
       } else {
-        setOpenConfirmModal(true)
+        setOpenConfirmModal(true);
       }
     }
-  },[isSuccessValidAssign, isErrorValidAssign, validAssignData])
+  }, [isSuccessValidAssign, isErrorValidAssign, validAssignData]);
 
   useEffect(() => {
     if (isError) {
@@ -108,13 +108,17 @@ function ManageUserPage() {
           updatedItems.pop();
         }
       }
-      const pageCount = Math.ceil(queryData?.data.result.total/20);
+      const pageCount = Math.ceil(queryData?.data.result.total / 20);
       const currentPage = Number(searchParams.get("page")) || 1;
-      if (pageCount<currentPage && searchParams.get("page") !== "1" && !isFetching) {
-        setSearchParams((p)=>{
-          p.set("page", pageCount===0?"1":pageCount.toString())
+      if (
+        pageCount < currentPage &&
+        searchParams.get("page") !== "1" &&
+        !isFetching
+      ) {
+        setSearchParams((p) => {
+          p.set("page", pageCount === 0 ? "1" : pageCount.toString());
           return p;
-        })
+        });
         refetch();
       }
       window.history.replaceState({}, "");
@@ -134,7 +138,6 @@ function ManageUserPage() {
       refetch();
     }
   }, [isErrorDelete, isSuccessDelete, errorDelete]);
-
 
   const baseUser: User = {
     id: 0,
@@ -203,16 +206,18 @@ function ManageUserPage() {
           <EditOutlined
             onClick={(e) => {
               e.stopPropagation();
+              handleEditUser(record.id);
             }}
           />
           <CloseCircleOutlined
             style={{ color: "red" }}
             onClick={async (e) => {
               e.stopPropagation();
-              await setUserDeleteId(record.id)
+              await setUserDeleteId(record.id);
               refetchValidAssign();
             }}
           />
+          {newUser && newUser.id === record.id && <Badge count={"New"} />}
         </div>
       ),
       key: "action",
@@ -256,6 +261,10 @@ function ManageUserPage() {
 
   const handleCreateUser = () => {
     navigate("/admin/users/createUser");
+  };
+
+  const handleEditUser = (id: number) => {
+    navigate(`/admin/users/edit-user/${id}`);
   };
 
   function handleDelete() {

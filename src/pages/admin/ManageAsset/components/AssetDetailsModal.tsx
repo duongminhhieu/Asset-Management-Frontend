@@ -13,6 +13,15 @@ interface Props {
   handleClose?: () => void;
 }
 function AssetDetailsModal({ assetData, show, handleClose }: Props) {
+
+  const displayState = {
+    AVAILABLE: "Available",
+    NOT_AVAILABLE: "Not Available",
+    ASSIGNED: "Assigned",
+    WAITING_FOR_RECYCLE: "Waiting for recycle",
+    RECYCLED: "Recycled",
+  };
+
   const [items, setItems] = useState<AssignmentHistoryDto[]>([]);
   function formatDate(dateInput: Date) {
     // Extract day, month, and year from the date object
@@ -73,7 +82,7 @@ function AssetDetailsModal({ assetData, show, handleClose }: Props) {
             labelAlign="left"
             className="my-2"
           >
-            <div>{assetData.assetCode}</div>
+            <p>{assetData.assetCode}</p>
           </Form.Item>
           <Form.Item
             label="Asset name"
@@ -81,7 +90,7 @@ function AssetDetailsModal({ assetData, show, handleClose }: Props) {
             labelAlign="left"
             className="my-2"
           >
-            <div>{assetData.name}</div>
+            <p>{assetData.name}</p>
           </Form.Item>
           <Form.Item
             label="Category"
@@ -105,7 +114,7 @@ function AssetDetailsModal({ assetData, show, handleClose }: Props) {
             labelAlign="left"
             className="my-2"
           >
-            <p>{assetData.state}</p>
+            <p>{displayState[assetData.state as "AVAILABLE"| "NOT_AVAILABLE"|"ASSIGNED"| "WAITING_FOR_RECYCLE"| "RECYCLED"]}</p>
           </Form.Item>
           <Form.Item
             label="Location"

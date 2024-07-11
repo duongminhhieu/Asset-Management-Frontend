@@ -1,12 +1,21 @@
-import React, { useState } from "react";
-import { Button, DatePicker, Form, Input, Radio, Typography } from "antd";
-import TypeSelector from "./components/TypeSelector";
-import LocationSelector from "./components/LocationSelector";
-import UsernameGenerator from "./components/UsernameGenerator";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Radio,
+  Typography,
+  Select,
+  message,
+} from "antd";
 import { UserAPICaller } from "../../../services/apis/user.api";
-import { UserRequest } from "@/types/UserRequest";
-import { useNavigate } from "react-router-dom";
+import { UserUpdateRequest } from "@/types/UserRequest";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "react-query";
 import dayjs from "dayjs";
+
+const { Option } = Select;
 
 interface FormValues {
   firstName: string;
@@ -18,53 +27,58 @@ interface FormValues {
   location?: number;
 }
 
-const CreateUser: React.FC = () => {
+const EditUser: React.FC = () => {
   const [form] = Form.useForm<FormValues>();
-  const [isStaticFieldVisible, setIsStaticFieldVisible] = useState(false);
-  const [userType, setUserType] = useState<string>("USER");
-  const [, setUsername] = useState<string>("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+  const [version, setVersion] = useState("");
+
+  const { data, isLoading, error } = useQuery(["user", id], () =>
+    UserAPICaller.getUserById(Number(id))
+  );
+
+  useEffect(() => {
+    if (data) {
+      const user = data.data.result;
+      form.setFieldsValue({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        dob: dayjs(user.dob),
+        gender: user.gender,
+        joinDate: dayjs(user.joinDate),
+        role: user.type,
+      });
+      setVersion(data.data.result.version);
+    }
+  }, [data, form]);
 
   const onFinish = (values: FormValues) => {
-    if (userType === "ADMIN" && !values.location) {
-      values.location = 1;
-    }
-
-    const requestData: UserRequest = {
-      firstName: values.firstName,
-      lastName: values.lastName,
+    const requestData: UserUpdateRequest = {
       dob: dayjs(values.dob).format("YYYY-MM-DD"),
       gender: values.gender,
       joinDate: dayjs(values.joinDate).format("YYYY-MM-DD"),
-      role: values.role,
-      locationId: values.location,
+      type: values.role,
+      version: Number(version),
     };
 
-    UserAPICaller.createUser(requestData)
+    UserAPICaller.editUser(Number(id), requestData)
       .then((response) => {
-        navigate("/admin/users", { state: { newUser: response.data.result } });
+        console.log(response.data.result);
+        navigate("/admin/users", {
+          state: { newUser: response.data.result },
+        });
       })
       .catch((error) => {
-        console.error("Error creating user:", error);
+        message.error(error);
       });
   };
 
   const validateWhitespace = (_: unknown, value: string) => {
     if (!value) {
       return Promise.reject(new Error("Cannot be empty"));
-    } else if (value.trim().length > 128) {
-      return Promise.reject(
-        new Error("Length must be less than 128 characters")
-      );
     }
-
-    // Check if the value contains only letters, digits, or underscores
-    else if (/^[a-zA-Z ]+$/.test(value)) {
-      return Promise.resolve();
-    }
-
-    return Promise.reject(new Error("Must not contains special chars"));
+    return Promise.resolve();
   };
 
   const validatedob = (_: unknown, value: Date) => {
@@ -103,44 +117,23 @@ const CreateUser: React.FC = () => {
     return Promise.resolve();
   };
 
-  const handleTypeChange = (value: string) => {
-    setUserType(value);
-    form.setFieldsValue({ role: value });
-  };
-
-  // Handlers
-  const handleFieldsChange = () => {
-    const fieldsValues = form.getFieldsValue();
-    const firstName = form.getFieldValue("firstName") || "";
-    const lastName = form.getFieldValue("lastName") || "";
-
-    const isFirstNameValid = firstName.trim() !== "";
-    const isLastNameValid = lastName.trim() !== "";
-    const isDobValid = fieldsValues.dob != null;
-    const isGenderValid = fieldsValues.gender != null;
-    const isJoinDateValid = fieldsValues.joinDate != null;
-    const isRoleValid = fieldsValues.role != null && fieldsValues.role !== "";
-
-    setIsButtonDisabled(
-      !(
-        isFirstNameValid &&
-        isLastNameValid &&
-        isDobValid &&
-        isGenderValid &&
-        isJoinDateValid &&
-        isRoleValid &&
-        firstName.length < 128 &&
-        lastName.length < 128
-      )
-    );
-    setUsername(
-      isFirstNameValid && isLastNameValid ? `${firstName} ${lastName}` : ""
-    );
-    setIsStaticFieldVisible(isFirstNameValid && isLastNameValid);
-  };
-
   const handleBackUserPage = () => {
     navigate("/admin/users");
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading user data</div>;
+  }
+
+  const handleFieldsChange = () => {
+    const fields = form.getFieldsValue();
+    const { dob, joinDate } = fields;
+
+    setIsButtonDisabled(!dob || !joinDate);
   };
 
   return (
@@ -156,7 +149,7 @@ const CreateUser: React.FC = () => {
       onFieldsChange={handleFieldsChange}
     >
       <Typography className="text-xl font-semibold text-red-500 font-serif pb-5">
-        Create New User
+        Edit User
       </Typography>
 
       {/* First Name */}
@@ -167,7 +160,7 @@ const CreateUser: React.FC = () => {
         labelAlign="left"
         rules={[{ validator: validateWhitespace }]}
       >
-        <Input data-testid="firstName" />
+        <Input data-testid="firstName" disabled />
       </Form.Item>
 
       {/* Last Name */}
@@ -178,17 +171,8 @@ const CreateUser: React.FC = () => {
         labelAlign="left"
         rules={[{ validator: validateWhitespace }]}
       >
-        <Input />
+        <Input disabled />
       </Form.Item>
-
-      {/* Static Field */}
-      {isStaticFieldVisible && (
-        <UsernameGenerator
-          label="Username"
-          firstName={form.getFieldValue("firstName")}
-          lastName={form.getFieldValue("lastName")}
-        />
-      )}
 
       {/* Date of Birth */}
       <Form.Item
@@ -214,7 +198,7 @@ const CreateUser: React.FC = () => {
         rules={[{ required: true, message: "Please select a gender!" }]}
       >
         <Radio.Group className="flex flex-row">
-          <Radio data-testid="male-option" value="FEMALE">
+          <Radio data-testid="female-option" value="FEMALE">
             Female
           </Radio>
           <Radio value="MALE">Male</Radio>
@@ -246,20 +230,11 @@ const CreateUser: React.FC = () => {
         labelAlign="left"
         rules={[{ required: true, message: "Please select a type!" }]}
       >
-        <TypeSelector value={userType} onChange={handleTypeChange} />
+        <Select>
+          <Option value="USER">User</Option>
+          <Option value="ADMIN">Admin</Option>
+        </Select>
       </Form.Item>
-
-      {/* Location */}
-      {userType === "ADMIN" && (
-        <Form.Item
-          label="Location"
-          name="location"
-          hasFeedback
-          labelAlign="left"
-        >
-          <LocationSelector />
-        </Form.Item>
-      )}
 
       {/* Button */}
       <div
@@ -269,9 +244,9 @@ const CreateUser: React.FC = () => {
         <Form.Item>
           <Button
             type="primary"
-            disabled={isButtonDisabled}
             danger
             htmlType="submit"
+            disabled={isButtonDisabled}
           >
             Save
           </Button>
@@ -284,4 +259,4 @@ const CreateUser: React.FC = () => {
   );
 };
 
-export default CreateUser;
+export default EditUser;
