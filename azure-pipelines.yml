@@ -5,13 +5,25 @@
 
 trigger:
   - main
+  - ci-cd
 pr:
   branches:
     include:
       - main
+      - ci-cd
 
 pool:
   vmImage: ubuntu-latest
+
+variables:
+  # Container registry service connection established during pipeline creation
+  appName: "rookies71"
+  dockerfilePath: "$(Build.SourcesDirectory)/Dockerfile"
+  tag: "$(Build.BuildId)"
+  GCP_PROJECT_ID: "asset-management-428307"
+  containerRegistry: "gcr-connection-2"
+  repositoryName: "assetmanagement"
+  imageName: "asset-frontend"
 
 steps:
   - task: NodeTool@0
@@ -26,3 +38,38 @@ steps:
       npm audit fix
       npm run build
     displayName: "Clean install and build"
+
+  - script: |
+      npm run coverage:ci || true
+    displayName: "Run tests"
+
+  - task: PublishTestResults@2
+    displayName: "Publish test results"
+    inputs:
+      testResultsFormat: "JUnit"
+      testResultsFiles: "**/test-report.xml"
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: "Cobertura"
+      summaryFileLocation: "$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml"
+      pathToSources: "$(Build.SourcesDirectory)"
+      failIfCoverageEmpty: true
+
+  - task: Docker@2
+    displayName: Login to Google Artifact Registry
+    inputs:
+      command: login
+      containerRegistry: $(containerRegistry)
+
+  - task: Docker@2
+    displayName: "Build and push an image to container registry"
+    inputs:
+      command: buildAndPush
+      repository: $(GCP_PROJECT_ID)/$(repositoryName)/$(imageName)
+      dockerfile: $(dockerfilePath)
+      tags: |
+        $(tag)
+        latest

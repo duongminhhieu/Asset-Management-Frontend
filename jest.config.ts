@@ -12,4 +12,20 @@ export default {
 
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   preset: 'ts-jest',
+
+  // reporters 
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: './coverage/test-report',
+        outputName: 'test-report.xml',
+      },
+    ],
+  ],
+  // coverage directory 
+  coverageDirectory: './coverage',
+  collectCoverage: true,
+  coverageReporters: ["cobertura", "lcov", "html"],
 };
