@@ -51,6 +51,15 @@ Online Asset Management is a project in Phase 2 of the Rookie Program of NashTec
 ```bash
     npm run coverage
 ```
+4. Note
+
+   - Password for user is auto generated according to format [username]@[DOB in ddmmyyyy], eg: binhnv@20011993
+   - Test account:
+   ```bash
+       username: hoangd
+       password: Test#1234
+    ```
+    
 # References
 1. [JPA & JWT (Hoang Nguyen)] (https://github.com/hoangnd-dev/rookies-java)
 2. [Springboot Demo (Phu Le)] (https://github.com/phulecse2420/demo)
