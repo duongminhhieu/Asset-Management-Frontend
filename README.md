@@ -1,30 +1,55 @@
-# React + TypeScript + Vite
+# Asset Management System
+Online Asset Management is a project in Phase 2 of the Rookie Program of NashTech. It provides features for tracking and managing users, assets, assignments, and returning requests.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Production CI-CD](https://github.com/duongminhhieu/Asset-Management-Frontend/actions/workflows/production-cicd.yml/badge.svg)](https://github.com/duongminhhieu/Asset-Management-Frontend/actions/workflows/production-cicd.yml)
+<div style="text-align: center;">
+    <img width="315" alt="Screenshot 2024-06-02 at 23 47 57" src="https://github.com/user-attachments/assets/4bdef888-e298-4272-9135-e6f89ae58b0b">
+</div>
 
-Currently, two official plugins are available:
+# Technologies
+- Node 20
+- React JS
+- Ant Design
+- TailwinCSS
+- React Query
+- Jest Testing
+- Google Cloud
+- Azure DevOps
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Architecture
 
-## Expanding the ESLint configuration
+<img width="1399" alt="Screenshot 2024-06-02 at 23 44 13" src="https://github.com/user-attachments/assets/953d0552-c775-464c-95b4-4939f5690a5c">
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+# Database Modeling
+<img width="880" alt="Screenshot 2024-06-02 at 23 44 13" src="https://github.com/user-attachments/assets/5b99293a-c930-4cc0-aff3-22516f1a3d65">
 
-- Configure the top-level `parserOptions` property like this:
+# Setting Up and Running at Local
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Configuration
+    
+1. Set up environment variable:
+
+    - Clone file **.env.sample** to the new file with name: **.env**
+    - Update environment variable in the file **.env**
+2. Install **node_modules**
+
+    - ```bash
+        npm install  
+      ```
+## Run
+1. Build the Project
+```bash
+    npm build  
 ```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Run the Application
+```bash
+    npm run dev
+```
+3. Run Test
+```bash
+    npm run coverage
+```
+# References
+1. [JPA & JWT (Hoang Nguyen)] (https://github.com/hoangnd-dev/rookies-java)
+2. [Springboot Demo (Phu Le)] (https://github.com/phulecse2420/demo)
+5. NashTech Slide
