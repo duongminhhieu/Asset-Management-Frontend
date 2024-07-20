@@ -39,18 +39,18 @@ jobs:
       - name: Run tests
         run: npm run coverage:ci
 
-    - name: Unit Test Results
-      uses: dorny/test-reporter@v1
-      if: success() || failure()
-      with:
-        name: Production-Unit-Test-Results
-        path: ./coverage/test-report/test-report.xml
-        reporter: jest-junit
+      - name: Unit Test Results
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Production-Unit-Test-Results
+          path: ./coverage/test-report/test-report.xml
+          reporter: jest-junit
 
-    - name: Code Coverage
-      uses: dorny/test-report@v1
-      if: success() || failure()
-      with:
-        name: Production-Code-Coverage
-        path: ./coverage/cobertura-coverage.xml
-        reporter: cobertura
+      - name: Code Coverage
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Production-Code-Coverage
+          path: ./coverage/cobertura-coverage.xml
+          reporter: cobertura
