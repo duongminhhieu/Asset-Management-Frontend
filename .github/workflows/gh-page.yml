@@ -52,10 +52,10 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: coverage-report
-          path: coverage/
+          # Upload the coverage directory from the repository
+          path: "./coverage/lcov-report"
 
       - name: Deploy to GitHub Pages
         id: deployment

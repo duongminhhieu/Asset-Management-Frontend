@@ -47,7 +47,41 @@ jobs:
           path: ./coverage/test-report/test-report.xml
           reporter: jest-junit
 
-      - name: Code Coverage
-        uses: artiomtr/jest-coverage-report-action@v1.3
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: "Build Inventory Image"
+        run: |
+          docker build . --tag ghcr.io/duongminhhieu/asset-frontend:latest
+          docker push ghcr.io/duongminhhieu/asset-frontend:latest
+
+      - name: Create Release Tag
+        id: create_tag
+        uses: actions/github-script@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const tag = 'v' + new Date().toISOString().split('T')[0] + '-production' + '-' + process.env.GITHUB_RUN_NUMBER;
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tag}`,
+              sha: context.sha
+            });
+            core.setOutput('tag', tag);
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.create_tag.outputs.tag }}
+          release_name: Release ${{ steps.create_tag.outputs.tag }}
