@@ -7,7 +7,7 @@ import { AxiosHeaders, AxiosResponse } from "axios";
 import APIResponse from "@/types/APIResponse";
 import { act } from "react";
 
-jest.mock("@/services/apis/Asset.api");
+jest.mock("@/services/apis/asset.api");
 const mockedAssetAPICaller = AssetAPICaller as jest.Mocked<
   typeof AssetAPICaller
 >;
